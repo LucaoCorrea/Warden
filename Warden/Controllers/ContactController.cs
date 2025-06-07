@@ -1,9 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Warden.Data;
+using Warden.Models;
+using Warden.Repository;
 
 namespace Warden.Controllers
 {
     public class ContactController : Controller
     {
+        private readonly IContactRepository _contactRepository;
+        public ContactController(IContactRepository contactRepository)
+        {
+            _contactRepository = contactRepository;
+        }
+        
+
         public IActionResult Index()
         {
             return View();
@@ -22,6 +32,14 @@ namespace Warden.Controllers
         public IActionResult Delete()
         {
             return View();
+        }
+
+
+        [HttpPost]
+        public IActionResult CreateContact(ContactModel contactModel)
+        {
+            _contactRepository.Add(contactModel);
+            return RedirectToAction("Index");
         }
     }
 }

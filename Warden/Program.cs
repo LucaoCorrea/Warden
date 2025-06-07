@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using Warden.Data;
+using Warden.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddScoped<IContactRepository, ContactRepository>();
 
 var app = builder.Build();
 
@@ -17,23 +20,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-
-//conection with database - fix this line to your database connection string
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
-
-var db = builder.Build();
-
-if (!db.Environment.IsDevelopment())
-{
-    db.UseExceptionHandler("/Error");
-    db.UseHsts();
-}
-
-
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
