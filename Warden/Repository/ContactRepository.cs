@@ -11,11 +11,17 @@ namespace Warden.Repository
             _dbContext = dbContext;
         }
 
+        public List<ContactModel> getAll()
+        {
+            return _dbContext.Contacts.ToList();
+        }
+
         public ContactModel Add(ContactModel contactModel)
         {
             _dbContext.Contacts.Add(contactModel);
             _dbContext.SaveChanges();
             return contactModel;
         }
+
     }
 }

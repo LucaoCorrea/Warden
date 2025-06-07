@@ -16,7 +16,8 @@ namespace Warden.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            List<ContactModel> contact = _contactRepository.getAll();
+            return View(contact);
         }
 
         public IActionResult Create()
@@ -33,7 +34,6 @@ namespace Warden.Controllers
         {
             return View();
         }
-
 
         [HttpPost]
         public IActionResult CreateContact(ContactModel contactModel)
