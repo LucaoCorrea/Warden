@@ -33,28 +33,74 @@ namespace Warden.Controllers
 
         public IActionResult Delete(int id)
         {
-            ContactModel contact = _contactRepository.GetById(id);
-            return View(contact);
+     
+                ContactModel contact = _contactRepository.GetById(id);
+                return View(contact);
         }
 
         [HttpPost]
         public IActionResult CreateContact(ContactModel contactModel)
         {
-            _contactRepository.Add(contactModel);
-            return RedirectToAction("Index");
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _contactRepository.Add(contactModel);
+                    TempData["MensagemSucesso"] = "Contato Criado com Sucesso.";
+                    return RedirectToAction("Index");
+                }
+
+                return View(contactModel);
+            }
+            catch (System.Exception err) 
+            {
+                TempData["MensagemErro"] = $"Erro ao criar Contato. {err.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         [HttpPost]
         public IActionResult EditContact(ContactModel contactModel)
         {
-            _contactRepository.Update(contactModel);
-            return RedirectToAction("Index");
+            try
+            {
+                if (ModelState.IsValid)
+                {
+                    _contactRepository.Update(contactModel);
+                    TempData["MensagemSucesso"] = "Contato Atualizado com Sucesso.";
+                    return RedirectToAction("Index");
+                }
+
+                return View("Edit", contactModel);
+            }
+            catch (System.Exception err)
+            {
+                TempData["MensagemErro"] = $"Erro ao Atualizar Contato. {err.Message}";
+                return RedirectToAction("Index");
+            }
         }
 
         public IActionResult DeleteContact(int id)
         {
-            _contactRepository.Delete(id);
-            return RedirectToAction("Index");
+            try
+            {
+               bool deleted = _contactRepository.Delete(id);
+
+                if (deleted)
+                {
+                    TempData["MensagemSucesso"] = "Contato Excluido com Sucesso.";
+                }
+                else
+                {
+                    TempData["MensagemErro"] = "Não Conseguimos Excluir o Contato.";
+                }
+                    return RedirectToAction("Index");
+            }
+            catch (System.Exception err)
+            {
+                TempData["MensagemErro"] = $"Não Conseguimos Excluir o Contato {err.Message}";
+                return RedirectToAction("Index");
+            }
         }
     }
 }

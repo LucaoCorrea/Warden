@@ -26,3 +26,19 @@
     <button type="submit" class="btn btn-primary btn-block">Adicionar</button>
     <a class="btn btn-secondary btn-block" asp-controller="Contact" asp-action="Index" role="button">Voltar</a>
 </form>
+
+@section Scripts {
+    <!-- validacao do campo Phone, feita com JQuery -->
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Aplica a máscara ao campo de telefone
+            $('#Phone').mask('(00) 00000-0000');
+        });
+    </script>
+}
