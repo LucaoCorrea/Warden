@@ -23,5 +23,36 @@ namespace Warden.Repository
             return contactModel;
         }
 
+        public ContactModel GetById(int id)
+        {
+            return _dbContext.Contacts.FirstOrDefault(x => x.Id == id);
+        }
+
+        public ContactModel Update(ContactModel contact)
+        {
+            ContactModel contactDB = GetById(contact.Id);
+
+            if (contactDB == null) throw new InvalidOperationException("Erro em atualizar o Contato."); // Não usei SystemException porque é genérica e interna do .NET. Usei InvalidOperationException para clareza.
+
+            contactDB.Name = contact.Name;
+            contactDB.Email = contact.Email;
+            contactDB.Phone = contact.Phone;
+
+            _dbContext.Contacts.Update(contactDB);
+            _dbContext.SaveChanges();   
+
+            return contactDB;
+        }
+
+        public bool Delete(int id)
+        {
+            ContactModel contactDB = GetById(id);
+
+            if (contactDB == null) throw new InvalidOperationException("Erro na exclusão do Contato.");
+
+            _dbContext.Contacts.Remove(contactDB);
+            _dbContext.SaveChanges();
+            return true;
+        }
     }
 }

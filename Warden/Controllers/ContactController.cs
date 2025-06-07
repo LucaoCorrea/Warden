@@ -25,20 +25,35 @@ namespace Warden.Controllers
             return View();
         }
 
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
-            return View();
+            ContactModel contact = _contactRepository.GetById(id);
+            return View(contact);
         }
 
-        public IActionResult Delete()
+        public IActionResult Delete(int id)
         {
-            return View();
+            ContactModel contact = _contactRepository.GetById(id);
+            return View(contact);
         }
 
         [HttpPost]
         public IActionResult CreateContact(ContactModel contactModel)
         {
             _contactRepository.Add(contactModel);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult EditContact(ContactModel contactModel)
+        {
+            _contactRepository.Update(contactModel);
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult DeleteContact(int id)
+        {
+            _contactRepository.Delete(id);
             return RedirectToAction("Index");
         }
     }

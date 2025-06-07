@@ -1,4 +1,5 @@
-﻿@{
+﻿@model ContactModel
+@{
     ViewData["Title"] = "Editar Contatos";
 }
 
@@ -6,18 +7,22 @@
     <h1 class="display-4">Cadastrar Contato</h1>
 </div>
 
-<form>
+<form asp-controller="Contact" asp-action="EditContact" method="post">
+    <input type="hidden" asp-for="Id"/>
     <div class="mb-3">
-        <label for="name" class="form-label">Nome</label>
-        <input type="text" class="form-control" placeholder="Digite seu Contato">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" placeholder="Digite seu nome">
+        <span asp-validation-for="Name" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input type="email" class="form-control" placeholder="Digite o E-mail">
+        <label asp-for="Email" class="form-label"></label>
+        <input asp-for="Email" class="form-control" placeholder="Digite o E-mail">
+        <span asp-validation-for="Email" class="text-danger"></span>
     </div>
     <div class="mb-3">
-        <label for="phone" class="form-label">Telefone</label>
-        <input type="text" class="form-control" placeholder="Digite o Telefone">
+        <label asp-for="Phone" class="form-label"></label>
+        <input asp-for="Phone" class="form-control" placeholder="Digite o Telefone">
+        <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
     <button type="submit" class="btn btn-primary btn-block">Alterar</button>
     <a class="btn btn-secondary btn-block" asp-controller="Contact" asp-action="Index" role="button">Voltar</a>
