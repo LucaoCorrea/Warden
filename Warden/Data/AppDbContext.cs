@@ -10,5 +10,6 @@ namespace Warden.Data
 
         }
         public DbSet<ContactModel> Contacts { get; set; }
+        public DbSet<User> Users { get; set; }  
     }
 }
