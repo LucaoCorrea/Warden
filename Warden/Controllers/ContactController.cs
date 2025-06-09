@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Warden.Data;
+using Warden.Helper;
 using Warden.Models;
 using Warden.Repository;
 
@@ -8,6 +9,7 @@ namespace Warden.Controllers
     public class ContactController : Controller
     {
         private readonly IContactRepository _contactRepository;
+        private readonly ISessionHelper _session; 
         public ContactController(IContactRepository contactRepository)
         {
             _contactRepository = contactRepository;
@@ -16,7 +18,8 @@ namespace Warden.Controllers
 
         public IActionResult Index()
         {
-            List<ContactModel> contact = _contactRepository.getAll();
+            UserModel userLogged = _session.GetUserSession();
+            List<ContactModel> contact = _contactRepository.getAll(userLogged.Id);
             return View(contact);
         }
 

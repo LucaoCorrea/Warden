@@ -54,5 +54,10 @@ namespace Warden.Repository
             _dbContext.SaveChanges();
             return true;
         }
+
+        public List<ContactModel> getAll(int userId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

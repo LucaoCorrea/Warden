@@ -20,6 +20,7 @@ namespace Warden.Models
         [Phone(ErrorMessage = "Número de telefone inválido.")] 
         [StringLength(20, MinimumLength = 8, ErrorMessage = "Telefone deve ter entre 8 e 20 caracteres.")] 
         public string Phone { get; set; }
+        public UserModel User { get; internal set; }
     }
 }
 
