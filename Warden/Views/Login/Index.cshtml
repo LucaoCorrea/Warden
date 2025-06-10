@@ -21,15 +21,14 @@
 }
 
 <form asp-controller="Login" asp-action="Login" method="post">
-    @Html.AntiForgeryToken()
     <div class="mb-3">
-        <label for="Login" class="form-label">Login</label>
-        <input type="text" asp-for="Login" class="form-control">
+        <label for="login" class="form-label">Login</label>
+        <input type="text" asp-for="Login" class="form-control" id="login">
         @Html.ValidationMessageFor(x => x.Login)
     </div>
     <div class="mb-3">
-        <label for="Password" class="form-label">Senha</label>
-        <input type="password" asp-for="Password" class="form-control">
+        <label for="password" class="form-label">Senha</label>
+        <input type="password" asp-for="Password" class="form-control" id="password">
         @Html.ValidationMessageFor(x => x.Password)
     </div>
 

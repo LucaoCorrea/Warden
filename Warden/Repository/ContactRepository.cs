@@ -8,7 +8,7 @@ namespace Warden.Repository
         private readonly AppDbContext _dbContext;
         public ContactRepository(AppDbContext dbContext)
         {
-            _dbContext = dbContext;
+            this._dbContext = dbContext;
         }
 
         public List<ContactModel> getAll(int userId)

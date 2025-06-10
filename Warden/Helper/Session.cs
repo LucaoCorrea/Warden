@@ -22,10 +22,8 @@ namespace Warden.Helper
         public UserModel GetUserSession()
         {
            string userSession = _httpContext.HttpContext.Session.GetString("UserSession");
-            if (string.IsNullOrEmpty(userSession))
-            {
-                return null;
-            }
+            if (string.IsNullOrEmpty(userSession)) return null;
+
             return JsonConvert.DeserializeObject<UserModel>(userSession);
         }
 

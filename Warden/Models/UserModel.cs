@@ -32,7 +32,8 @@ namespace Warden.Models
 
         public bool ValidPassword(string password)
         {
-            return Password == password.GenerateHash();
+            string passwordHash = password.GenerateHash();
+            return Password == passwordHash;
         }
 
         public void SetPasswordHash()

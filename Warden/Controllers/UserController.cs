@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics.CodeAnalysis;
+using Warden.Filters;
 using Warden.Models;
 using Warden.Repository;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Warden.Controllers
 {
-
+    [PageForAdmin]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -20,7 +19,7 @@ namespace Warden.Controllers
 
         public ActionResult Index()
         {
-            List<UserModel> users = _userRepository.getAll();
+            List<UserModel> users = _userRepository.GetAll();
             return View(users);
         }
 
@@ -31,13 +30,13 @@ namespace Warden.Controllers
 
         public ActionResult Edit(int id)
         {
-            UserModel user = _userRepository.getById(id);
+            UserModel user = _userRepository.GetById(id);
             return View(user);
         }
 
         public ActionResult ConfirmDelete(int id)
         {
-            UserModel user = _userRepository.getById(id);
+            UserModel user = _userRepository.GetById(id);
             return View(user);
         }
 
@@ -45,14 +44,14 @@ namespace Warden.Controllers
         {
             try
             {
-                bool deleted = _userRepository.delete(id);
+                bool deleted = _userRepository.Delete(id);
 
                 if (deleted) TempData["MensagemSucesso"] = "Usuário apagado com sucesso!"; else TempData["MensagemErro"] = "Ops, não conseguimos apagar seu usuário, tente novamante!";
                 return RedirectToAction("Index");
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                TempData["MensagemErro"] = $"Ops, não conseguimos apagar seu usuário, tente novamante, detalhe do erro: {erro.Message}";
+                TempData["MensagemErro"] = $"Ops, não conseguimos apagar seu usuário, tente novamante, detalhe do erro: {err.Message}";
                 return RedirectToAction("Index");
             }
         }
@@ -60,7 +59,7 @@ namespace Warden.Controllers
         public IActionResult ListContactsByUserId(int id)
         {
             List<ContactModel> contacts = _contactRepository.getAll(id);
-            return PartialView("_ContactsList", contacts);
+            return PartialView("_ContactsUser", contacts);
         }
 
         // Endpoints
@@ -71,16 +70,16 @@ namespace Warden.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    UserModel userCreated = _userRepository.create(user);
+                    UserModel userCreated = _userRepository.Create(user);
                     TempData["MensagemSucesso"] = "Usuário cadastrado com sucesso!";
                     return RedirectToAction("Index");
                 }
                 return View(user);
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                TempData["MensagemErro"] = $"Ops, não conseguimos cadastrar seu usuário, tente novamante, detalhe do erro: {erro.Message}";
-                return View(user);
+                TempData["MensagemErro"] = $"Ops, não conseguimos cadastrar seu usuário, tente novamante, detalhe do erro: {err.Message}";
+                return RedirectToAction("Index");
             }
         }
 
@@ -102,7 +101,7 @@ namespace Warden.Controllers
                         Profile = userNoPassword.Profile,
                     };
 
-                    user = _userRepository.update(user);
+                    user = _userRepository.Update(user);
                     TempData["MensagemSucesso"] = "Usuário atualizado com sucesso!";
                     return RedirectToAction("Index");
                 }

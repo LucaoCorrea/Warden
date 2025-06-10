@@ -11,21 +11,21 @@ namespace Warden.Repository
 
         public UserRepository(AppDbContext context)
         {
-            _context = context;
+            this._context = context;
         }
 
-        public UserModel create(UserModel user)
+        public UserModel Create(UserModel user)
         {
            user.CreatedAt = DateTime.Now;
            user.SetPasswordHash();
            _context.Users.Add(user);
-            _context.SaveChanges();
+           _context.SaveChanges();
             return user;
         }
 
-        public bool delete(int Id)
+        public bool Delete(int Id)
         {
-            UserModel userDB = getById(Id);
+            UserModel userDB = GetById(Id);
 
             if (userDB == null)
             {
@@ -39,7 +39,7 @@ namespace Warden.Repository
 
         public UserModel EditPassword(EditPasswordModel editPasswordModel) //classe para Alterar a senha do usuário
         {
-            UserModel userDB = getById(editPasswordModel.Id);
+            UserModel userDB = GetById(editPasswordModel.Id);
 
             if (userDB == null)
             {
@@ -64,29 +64,29 @@ namespace Warden.Repository
             throw new NotImplementedException();
         }
 
-        public List<UserModel> getAll()
+        public List<UserModel> GetAll()
         {
             return _context.Users.Include(u => u.Contacts).ToList();
         }
 
-        public UserModel getByEmailLogin(string email, string login)
+        public UserModel GetByEmailLogin(string email, string login)
         {
             return _context.Users.FirstOrDefault(u => u.Email.ToUpper() == email.ToUpper() && u.Login.ToUpper() == login.ToUpper());
         }
 
-        public UserModel getById(int id)
+        public UserModel GetById(int id)
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public UserModel getByLogin(string login)
+        public UserModel GetByLogin(string login)
         {
             return _context.Users.FirstOrDefault(u => u.Login.ToUpper() == login.ToUpper());
         }
 
-        public UserModel update(UserModel user)
+        public UserModel Update(UserModel user)
         {
-            UserModel userDB = getById(user.Id);
+            UserModel userDB = GetById(user.Id);
             if (userDB == null)
             {
                 throw new Exception("Houve um erro na atualização do usuário!");

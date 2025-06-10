@@ -8,7 +8,7 @@ namespace Warden.Repository
         List<ContactModel> getAll(int userId);
         ContactModel Add(ContactModel contactModel);
 
-        ContactModel Update(ContactModel contact);
+        ContactModel Update(ContactModel contactModel);
 
         bool Delete(int id);
 

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Warden.Helper;
 using Warden.Models;
 using Warden.Repository;
@@ -11,22 +10,18 @@ namespace Warden.Controllers
         private readonly IUserRepository _userRepository;
         private readonly ISessionHelper _session;
         private readonly IEmail _email;
-        private readonly ILogger<LoginController> _logger;
 
-        public LoginController(IUserRepository userRepository, ISessionHelper session, IEmail email, ILogger<LoginController> logger)
+        public LoginController(IUserRepository userRepository, ISessionHelper session, IEmail email)
         {
             _userRepository = userRepository;
             _session = session;
             _email = email;
-            _logger = logger;
         }
 
         public ActionResult Index()
         {
-            if (_session.GetUserSession() != null)
-            {
-                return RedirectToAction("Index", "Home");
-            }
+            if (_session.GetUserSession() != null) return RedirectToAction("Index", "Home");
+
             return View();
         }
 
@@ -42,92 +37,68 @@ namespace Warden.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult Login(LoginModel loginModel)
         {
             try
             {
-                _logger.LogInformation("Tentativa de login para: {Login}", loginModel.Login);
-
-                if (!ModelState.IsValid)
+                if (ModelState.IsValid)
                 {
-                    _logger.LogWarning("ModelState inválido para: {Login}", loginModel.Login);
-                    return View("Index", loginModel);
+                    UserModel user = _userRepository.GetByLogin(loginModel.Login);
+                    if (user != null)
+                    {
+                        if (user.ValidPassword(loginModel.Password))
+                        {
+                            _session.CreateUserSession(user);
+                            return RedirectToAction("Index", "Home");
+                        }
+                        TempData["MensagemErro"] = $"Senha do usuário é inválida, tente novamente.";
+                    }
+
+                    TempData["MensagemErro"] = $"Usuário e/ou senha inválido(s). Por favor, tente novamente.";
                 }
-
-                var userModel = _userRepository.getByLogin(loginModel.Login);
-
-                if (userModel == null)
-                {
-                    _logger.LogWarning("Usuário não encontrado: {Login}", loginModel.Login);
-                }
-                else if (!userModel.ValidPassword(loginModel.Password))
-                {
-                    _logger.LogWarning("Senha incorreta para usuário: {Login}", loginModel.Login);
-                }
-
-                if (userModel == null || !userModel.ValidPassword(loginModel.Password))
-                {
-                    TempData["MensagemErro"] = "Usuário e/ou senha inválido(s). Por favor, tente novamente.";
-                    return View("Index", loginModel);
-                }
-
-                _session.CreateUserSession(userModel);
-                _logger.LogInformation("Login bem-sucedido: {Login}", loginModel.Login);
-
-                return RedirectToAction("Index", "Home");
+                return View("Index");
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Erro ao tentar login para: {Login}", loginModel.Login);
-                TempData["MensagemErro"] = $"Ocorreu um erro ao tentar realizar o login: {err.Message}";
-                return View("Index", loginModel);
+                TempData["MensagemErro"] = $"Ops, não conseguimos realizar seu login, tente novamante, detalhe do erro: {err.Message}";
+                return RedirectToAction("Index");
             }
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public IActionResult SendLinkResetPassword(ResetPasswordModel resetPassword)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    _logger.LogInformation("Solicitação de reset de senha: Login={Login}, Email={Email}", resetPassword.Login, resetPassword.Email);
-
-                    var user = _userRepository.getByEmailLogin(resetPassword.Email, resetPassword.Login);
+                    UserModel user = _userRepository.GetByEmailLogin(resetPassword.Email, resetPassword.Login);
 
                     if (user != null)
                     {
                         string newPassword = user.GenerateNewPassword();
-                        string message = $"Sua nova senha é: {newPassword}";
+                        string message = $"Olá {user.Name}, sua nova senha é: {newPassword}";
 
-                        bool emailSend = _email.SendEmail(user.Email, "Sistema de Contatos - Nova Senha", message);
+                        bool emailSent = _email.SendEmail(user.Email, "Redefinição de senha", message);
 
-                        if (emailSend)
+                        if (emailSent)
                         {
-                            _userRepository.update(user);
-                            _logger.LogInformation("Senha redefinida e e-mail enviado com sucesso para: {Email}", user.Email);
-                            TempData["MensagemSucesso"] = "Enviamos para seu e-mail cadastrado uma nova senha.";
+                            _userRepository.Update(user);
+                            TempData["MensagemSucesso"] = $"E-mail enviado com sucesso para {user.Email} com a nova senha.";
                         }
                         else
                         {
-                            _logger.LogWarning("Falha ao enviar e-mail para: {Email}", user.Email);
-                            TempData["MensagemErro"] = "Não conseguimos enviar e-mail. Por favor, tente novamente.";
+                            TempData["MensagemErro"] = $"Não foi possível enviar o e-mail para {user.Email}. Tente novamente mais tarde.";
                         }
-
                         return RedirectToAction("Index", "Login");
                     }
-
-                    _logger.LogWarning("Usuário não encontrado para redefinição de senha: {Login}", resetPassword.Login);
-                    TempData["MensagemErro"] = "Não conseguimos redefinir sua senha. Por favor, verifique os dados informados.";
+                    TempData["MensagemErro"] = $"Não conseguimos redefinir sua senha. Por favor, verifique os dados informados.";
                 }
 
-                return View("ResetPassword", resetPassword);
+                return View("Index");
             }
             catch (Exception err)
             {
-                _logger.LogError(err, "Erro ao tentar redefinir senha para: {Login}", resetPassword.Login);
                 TempData["MensagemErro"] = $"Ops, não conseguimos redefinir sua senha, tente novamente, detalhe do erro: {err.Message}";
                 return RedirectToAction("ResetPassword");
             }

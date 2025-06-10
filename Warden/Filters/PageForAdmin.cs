@@ -9,7 +9,7 @@ namespace Warden.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string sessionUser = context.HttpContext.Session.GetString("sessionUserlogged");
+            string sessionUser = context.HttpContext.Session.GetString("UserSession");
 
             if (string.IsNullOrEmpty(sessionUser))
             {

@@ -1,26 +1,30 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Warden.Data;
+using Warden.Filters;
 using Warden.Helper;
 using Warden.Models;
 using Warden.Repository;
 
 namespace Warden.Controllers
 {
+    [PageForLoggedInUser]
     public class ContactController : Controller
     {
         private readonly IContactRepository _contactRepository;
-        private readonly ISessionHelper _session; 
-        public ContactController(IContactRepository contactRepository)
+        private readonly ISessionHelper _session;
+
+        public ContactController(IContactRepository contactRepository, ISessionHelper session)
         {
             _contactRepository = contactRepository;
+            _session = session;
         }
-        
 
         public IActionResult Index()
         {
             UserModel userLogged = _session.GetUserSession();
-            List<ContactModel> contact = _contactRepository.getAll(userLogged.Id);
-            return View(contact);
+            if (userLogged == null) return RedirectToAction("Login", "Account");
+
+            List<ContactModel> contacts = _contactRepository.getAll(userLogged.Id);
+            return View(contacts);
         }
 
         public IActionResult Create()
@@ -31,79 +35,62 @@ namespace Warden.Controllers
         public IActionResult Edit(int id)
         {
             ContactModel contact = _contactRepository.GetById(id);
+            if (contact == null) return NotFound();
             return View(contact);
         }
 
         public IActionResult Delete(int id)
         {
-     
-                ContactModel contact = _contactRepository.GetById(id);
-                return View(contact);
+            ContactModel contact = _contactRepository.GetById(id);
+            if (contact == null) return NotFound();
+            return View(contact);
         }
 
         [HttpPost]
-        public IActionResult CreateContact(ContactModel contactModel)
+        public IActionResult Create(ContactModel contactModel)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _contactRepository.Add(contactModel);
-                    TempData["MensagemSucesso"] = "Contato Criado com Sucesso.";
-                    return RedirectToAction("Index");
-                }
+            if (!ModelState.IsValid) return View(contactModel);
 
-                return View(contactModel);
-            }
-            catch (System.Exception err) 
-            {
-                TempData["MensagemErro"] = $"Erro ao criar Contato. {err.Message}";
-                return RedirectToAction("Index");
-            }
+            UserModel userLogged = _session.GetUserSession();
+            if (userLogged == null) return RedirectToAction("Login", "Account");
+
+            contactModel.UserId = userLogged.Id;
+            _contactRepository.Add(contactModel);
+
+            TempData["MensagemSucesso"] = "Contato cadastrado com sucesso!";
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
-        public IActionResult EditContact(ContactModel contactModel)
+        public IActionResult Edit(ContactModel contactModel)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    _contactRepository.Update(contactModel);
-                    TempData["MensagemSucesso"] = "Contato Atualizado com Sucesso.";
-                    return RedirectToAction("Index");
-                }
+            if (!ModelState.IsValid) return View(contactModel);
 
-                return View("Edit", contactModel);
-            }
-            catch (System.Exception err)
-            {
-                TempData["MensagemErro"] = $"Erro ao Atualizar Contato. {err.Message}";
-                return RedirectToAction("Index");
-            }
+            UserModel userLogged = _session.GetUserSession();
+            if (userLogged == null) return RedirectToAction("Login", "Account");
+
+            contactModel.UserId = userLogged.Id;
+            _contactRepository.Update(contactModel);
+
+            TempData["MensagemSucesso"] = "Contato alterado com sucesso!";
+            return RedirectToAction("Index");
         }
 
-        public IActionResult DeleteContact(int id)
+        [HttpPost]
+        public IActionResult DeleteConfirmed(int id)
         {
-            try
-            {
-               bool deleted = _contactRepository.Delete(id);
+            bool deleted = _contactRepository.Delete(id);
 
-                if (deleted)
-                {
-                    TempData["MensagemSucesso"] = "Contato Excluido com Sucesso.";
-                }
-                else
-                {
-                    TempData["MensagemErro"] = "Não Conseguimos Excluir o Contato.";
-                }
-                    return RedirectToAction("Index");
-            }
-            catch (System.Exception err)
+            if (deleted)
             {
-                TempData["MensagemErro"] = $"Não Conseguimos Excluir o Contato {err.Message}";
-                return RedirectToAction("Index");
+                TempData["MensagemSucesso"] = "Contato excluído com sucesso!";
             }
+            else
+            {
+                TempData["MensagemErro"] = "Não foi possível excluir o contato.";
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }

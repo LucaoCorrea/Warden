@@ -7,5 +7,8 @@
     <h3 class="display-4">Realmente deseja Apagar o Contato: @Model.Name?</h3>
 </div>
 
-<a class="btn btn-primary" role="button" asp-controller="Contact" asp-action="Index">Cancelar Exclusão</a>
-<a class="btn btn-danger" role="button" asp-controller="Contact" asp-action="DeleteContact" asp-route-id="@Model.Id">Confirmar Exclusão</a>
+<form asp-controller="Contact" asp-action="DeleteConfirmed" method="post" style="display:inline;">
+    <input type="hidden" name="id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
+</form>
+<a class="btn btn-secondary" asp-controller="Contact" asp-action="Index">Cancelar Exclusão</a>

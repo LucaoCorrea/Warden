@@ -1,44 +1,53 @@
 ﻿@model ContactModel
 @{
-    ViewData["Title"] = "Criar Contatos";
+    ViewData["Title"] = "Criar contato";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Cadastrar Contato</h1>
+    <h1 class="display-4">Cadastrar contato</h1>
 </div>
 
-<form asp-controller="Contact" asp-action="CreateContact" method="post">
-    <div class="mb-3">
+<form asp-controller="Contact" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group mb-3">
         <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" placeholder="Digite seu nome">
+        <input asp-for="Name" class="form-control" placeholder="Digite o nome do contato">
         <span asp-validation-for="Name" class="text-danger"></span>
     </div>
-    <div class="mb-3">
+
+    <div class="form-group mb-3">
         <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" placeholder="Digite o E-mail">
+        <input asp-for="Email" class="form-control" placeholder="Digite o e-mail do contato">
         <span asp-validation-for="Email" class="text-danger"></span>
     </div>
-    <div class="mb-3">
+
+    <div class="form-group mb-3">
         <label asp-for="Phone" class="form-label"></label>
-        <input asp-for="Phone" class="form-control" placeholder="Digite o Telefone">
+        <input asp-for="Phone" class="form-control" placeholder="Digite o celular do contato">
         <span asp-validation-for="Phone" class="text-danger"></span>
     </div>
+
     <button type="submit" class="btn btn-primary btn-block">Adicionar</button>
-    <a class="btn btn-secondary btn-block" asp-controller="Contact" asp-action="Index" role="button">Voltar</a>
+    <a class="btn btn-secondary btn-block" asp-action="Index" asp-controller="Contact" role="button">Voltar</a>
 </form>
 
 @section Scripts {
-    <!-- validacao do campo Phone, feita com JQuery -->
     <partial name="_ValidationScriptsPartial" />
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
 
     <script>
-        $(document).ready(function () {
-            // Aplica a máscara ao campo de telefone
+        $(document).ready(function() {
             $('#Phone').mask('(00) 00000-0000');
+
+            // Validação adicional para evitar submissão com campos inválidos
+            $('form').submit(function(e) {
+                if (!$(this).valid()) {
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            });
         });
     </script>
 }
