@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel.DataAnnotations;
 
 namespace Warden.Models
 {
@@ -18,8 +18,9 @@ namespace Warden.Models
         public string Email { get; set; }
 
         [Phone(ErrorMessage = "Número de telefone inválido.")] 
-        [StringLength(20, MinimumLength = 8, ErrorMessage = "Telefone deve ter entre 8 e 20 caracteres.")] 
         public string Phone { get; set; }
+
+        [ValidateNever]
         public UserModel User { get; internal set; }
 
         public int? UserId { get; set; }

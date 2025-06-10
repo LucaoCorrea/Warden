@@ -20,6 +20,8 @@ namespace Warden.Repository
         {
             _dbContext.Contacts.Add(contactModel);
             _dbContext.SaveChanges();
+            int result = _dbContext.SaveChanges();
+            Console.WriteLine($"Registros afetados: {result}");
             return contactModel;
         }
 

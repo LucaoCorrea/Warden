@@ -47,14 +47,21 @@ namespace Warden.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Create(ContactModel contactModel)
         {
-            if (!ModelState.IsValid) return View(contactModel);
-
-            UserModel userLogged = _session.GetUserSession();
+            var userLogged = _session.GetUserSession();
             if (userLogged == null) return RedirectToAction("Login", "Account");
 
             contactModel.UserId = userLogged.Id;
+
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                TempData["MensagemErro"] = string.Join(" | ", errors);
+                return View(contactModel);
+            }
+
             _contactRepository.Add(contactModel);
 
             TempData["MensagemSucesso"] = "Contato cadastrado com sucesso!";
