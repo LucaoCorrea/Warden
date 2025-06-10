@@ -44,12 +44,17 @@ namespace Warden.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Contacts");
                 });
 
-            modelBuilder.Entity("Warden.Models.User", b =>
+            modelBuilder.Entity("Warden.Models.UserModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,6 +90,20 @@ namespace Warden.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Warden.Models.ContactModel", b =>
+                {
+                    b.HasOne("Warden.Models.UserModel", "User")
+                        .WithMany("Contacts")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Warden.Models.UserModel", b =>
+                {
+                    b.Navigation("Contacts");
                 });
 #pragma warning restore 612, 618
         }

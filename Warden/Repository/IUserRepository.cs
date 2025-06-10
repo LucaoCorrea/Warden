@@ -5,15 +5,15 @@ namespace Warden.Repository
 {
     public interface IUserRepository
     {
-        UserModel getByLogin(string Login);
-        UserModel getByEmailLogin(string Email, string Login);
+        UserModel getByLogin(string login);
+        UserModel getByEmailLogin(string email, string login);
         List<UserModel> getAll();
         UserModel getById(int Id);
         UserModel create(UserModel user);
         UserModel update(UserModel user);
-        UserModel EditPassword(EditPasswordModel editPasswordModel); //passar classe EditPasswordModel
+        UserModel EditPassword(EditPasswordModel editPasswordModel); 
         
-        bool delete(int Id);
+        bool delete(int id);
 
     }
 }

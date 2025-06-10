@@ -11,9 +11,9 @@ namespace Warden.Repository
             _dbContext = dbContext;
         }
 
-        public List<ContactModel> getAll()
+        public List<ContactModel> getAll(int userId)
         {
-            return _dbContext.Contacts.ToList();
+            return _dbContext.Contacts.Where(x => x.UserId == userId).ToList();
         }
 
         public ContactModel Add(ContactModel contactModel)
@@ -55,9 +55,5 @@ namespace Warden.Repository
             return true;
         }
 
-        public List<ContactModel> getAll(int userId)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

@@ -6,6 +6,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Warden.Controllers
 {
+
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -56,18 +57,13 @@ namespace Warden.Controllers
             }
         }
 
-        public IActionResult ListContactsByUserId(int userId)
+        public IActionResult ListContactsByUserId(int id)
         {
-            List<ContactModel> contacts = _contactRepository.getAll(userId);
-            if (contacts == null || contacts.Count == 0)
-            {
-                TempData["MensagemErro"] = "Nenhum contato encontrado para este usuário.";
-                return RedirectToAction("Index");
-            }
+            List<ContactModel> contacts = _contactRepository.getAll(id);
             return PartialView("_ContactsList", contacts);
         }
 
-        // EndPoints
+        // Endpoints
         [HttpPost]
         public IActionResult Create(UserModel user)
         {

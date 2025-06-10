@@ -17,8 +17,8 @@ namespace Warden.Repository
         public UserModel create(UserModel user)
         {
            user.CreatedAt = DateTime.Now;
-            // passar o password para o hash
-            _context.Users.Add(user);
+           user.SetPasswordHash();
+           _context.Users.Add(user);
             _context.SaveChanges();
             return user;
         }
@@ -46,9 +46,9 @@ namespace Warden.Repository
                 throw new Exception("Usuário não encontrado!");
             }
 
-            if(!userDB.ValidPassowrd(editPasswordModel.NowPassword)) throw new Exception("Senha não confere!");
+            if(!userDB.ValidPassword(editPasswordModel.NowPassword)) throw new Exception("Senha não confere!");
 
-            if(userDB.ValidPassowrd(editPasswordModel.NewPassword)) throw new Exception("A nova senha não pode ser igual a senha atual!");
+            if(userDB.ValidPassword(editPasswordModel.NewPassword)) throw new Exception("A nova senha não pode ser igual a senha atual!");
 
             userDB.SetNewPassword(editPasswordModel.NewPassword);
             userDB.UpdatedAt = DateTime.Now;
@@ -69,19 +69,19 @@ namespace Warden.Repository
             return _context.Users.Include(u => u.Contacts).ToList();
         }
 
-        public UserModel getByEmailLogin(string Email, string Login)
+        public UserModel getByEmailLogin(string email, string login)
         {
-            return _context.Users.FirstOrDefault(u => u.Email.ToUpper() == Email.ToUpper() && u.Login.ToUpper() == Login.ToUpper());
+            return _context.Users.FirstOrDefault(u => u.Email.ToUpper() == email.ToUpper() && u.Login.ToUpper() == login.ToUpper());
         }
 
-        public UserModel getById(int Id)
+        public UserModel getById(int id)
         {
-            return _context.Users.FirstOrDefault(u => u.Id == Id);
+            return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public UserModel getByLogin(string Login)
+        public UserModel getByLogin(string login)
         {
-            return _context.Users.FirstOrDefault(u => u.Login.ToUpper() == Login.ToUpper());
+            return _context.Users.FirstOrDefault(u => u.Login.ToUpper() == login.ToUpper());
         }
 
         public UserModel update(UserModel user)
