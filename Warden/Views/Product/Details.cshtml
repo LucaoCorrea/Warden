@@ -1,0 +1,32 @@
+﻿@model Warden.Models.ProductModel
+@{
+    ViewData["Title"] = "Detalhes do Produto";
+}
+
+<h2>Detalhes do Produto</h2>
+<div class="row">
+    <div class="col-md-6">
+        <dl class="row">
+            <dt class="col-sm-4">Nome</dt>
+            <dd class="col-sm-8">@Model.Name</dd>
+            <dt class="col-sm-4">SKU</dt>
+            <dd class="col-sm-8">@Model.SKU</dd>
+            <dt class="col-sm-4">Categoria</dt>
+            <dd class="col-sm-8">@Model.Category</dd>
+            <dt class="col-sm-4">Estoque</dt>
+            <dd class="col-sm-8">@Model.Stock</dd>
+            <dt class="col-sm-4">Preço de Custo</dt>
+            <dd class="col-sm-8">R$ @Model.CostPrice.ToString("F2")</dd>
+            <dt class="col-sm-4">Preço de Venda</dt>
+            <dd class="col-sm-8">R$ @Model.SalePrice.ToString("F2")</dd>
+            <dt class="col-sm-4">Unidade</dt>
+            <dd class="col-sm-8">@Model.Unit</dd>
+            <dt class="col-sm-4">Imagem</dt>
+            <dd class="col-sm-8">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid" />
+            </dd>
+        </dl>
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+    </div>
+</div>

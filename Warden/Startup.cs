@@ -1,10 +1,19 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Linq;
 using Warden.Data;
+using Warden.Enums;
 using Warden.Helper;
 using Warden.Models;
+using Warden.Repositories;
 using Warden.Repository;
-using Warden.Enums;
+using Warden.Services;
 
 namespace Warden
 {
@@ -22,20 +31,26 @@ namespace Warden
             services.AddControllersWithViews();
 
             services.AddEntityFrameworkSqlServer()
-                .AddDbContext<AppDbContext>(
-                    options => options.UseSqlServer(Configuration.GetConnectionString("Database")));
+                .AddDbContext<AppDbContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("Database")));
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IContactRepository, ContactRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IStockMovementRepository, StockMovementRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+
+            services.AddScoped<StockMovementService>();
+            services.AddScoped<ProductService>();
+
             services.AddScoped<ISessionHelper, Session>();
             services.AddScoped<IEmail, Email>();
 
-            services.AddSession(o =>
+            services.AddSession(options =>
             {
-                o.Cookie.HttpOnly = true;
-                o.Cookie.IsEssential = true;
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -55,9 +70,7 @@ namespace Warden
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseAuthorization();
-
             app.UseSession();
 
             app.UseEndpoints(endpoints =>
@@ -74,7 +87,6 @@ namespace Warden
             }
         }
 
-        // aqui instancia um user admin, para que possa melhorar a versão de desenvolvimento <- e facilitar a vida do dev =)
         private void CreateDefaultUser(AppDbContext context)
         {
             if (!context.Users.Any(u => u.Login == "admin"))
