@@ -2,62 +2,80 @@
 @{
     ViewData["Title"] = "Novo Produto";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<h2>Novo Produto</h2>
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
-    <div class="row">
-        <div class="col-md-6">
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="SKU" class="form-label"></label>
-                <input asp-for="SKU" class="form-control" />
-                <span asp-validation-for="SKU" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Category" class="form-label"></label>
-                <input asp-for="Category" class="form-control" />
-                <span asp-validation-for="Category" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <sp
-            <div class="mb-3">
-                <label asp-for="Stock" class="form-label"></label>
-                <input asp-for="Stock" class="form-control" />
-                <span asp-validation-for="Stock" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="CostPrice" class="form-label"></label>
-                <input asp-for="CostPrice" class="form-control" type="number" step="0.01"/> 
-                <span asp-validation-for="CostPrice" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="SalePrice" class="form-label"></label>
-                <input asp-for="SalePrice" class="form-control" type="number" step="0.01" />
-                <span asp-validation-for="SalePrice" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="Unit" class="form-label"></label>
-                <input asp-for="Unit" class="form-control" />
-                <span asp-validation-for="Unit" class="text-danger"></span>
-            </div>
-            <div class="mb-3">
-                <label asp-for="ImageUrl" class="form-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
-            </div>
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="text-danger mb-4">📦 Novo Produto</h2>
+
+    <form asp-action="Create" method="post" class="border p-4 rounded shadow-sm bg-light" data-aos="fade-right">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">🏷️ Nome</label>
+            <input asp-for="Name" class="form-control" placeholder="Digite o nome do produto" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
-    </div>
-    <button type="submit" class="btn btn-success">Salvar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+
+        <div class="mb-3">
+            <label asp-for="SKU" class="form-label">🔢 SKU</label>
+            <input asp-for="SKU" class="form-control" placeholder="Código identificador" />
+            <span asp-validation-for="SKU" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Category" class="form-label">📁 Categoria</label>
+            <input asp-for="Category" class="form-control" placeholder="Categoria do produto" />
+            <span asp-validation-for="Category" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Description" class="form-label">📝 Descrição</label>
+            <input asp-for="Description" class="form-control" placeholder="Descrição do produto" />
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Stock" class="form-label">📦 Estoque</label>
+            <input asp-for="Stock" class="form-control" />
+            <span asp-validation-for="Stock" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="CostPrice" class="form-label">💰 Preço de Custo</label>
+            <input asp-for="CostPrice" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="CostPrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="SalePrice" class="form-label">💵 Preço de Venda</label>
+            <input asp-for="SalePrice" class="form-control" type="number" step="0.01" />
+            <span asp-validation-for="SalePrice" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Unit" class="form-label">📏 Unidade</label>
+            <input asp-for="Unit" class="form-control" placeholder="Ex: un, kg, m" />
+            <span asp-validation-for="Unit" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ImageUrl" class="form-label">🖼️ URL da Imagem</label>
+            <input asp-for="ImageUrl" class="form-control" placeholder="Link da imagem" />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
+            <button type="submit" class="btn btn-danger">💾 Salvar</button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+    </script>
 }
