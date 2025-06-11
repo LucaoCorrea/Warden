@@ -6,7 +6,7 @@
 <h2>Confirmar Exclusão</h2>
 <div>
     <h4>Tem certeza que deseja excluir o produto "@Model.Name"?</h4>
-    <form asp-action="Delete">
+    <form asp-action="Delete" method="post">
         <input type="hidden" asp-for="Id" />
         <button type="submit" class="btn btn-danger">Excluir</button>
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>

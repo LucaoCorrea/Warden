@@ -17,10 +17,20 @@ namespace Warden.Services
 
         public ProductModel GetById(int id) => _productRepository.GetById(id);
 
-        public void Add(ProductModel product) => _productRepository.Add(product);
+        public void Add(ProductModel product)
+        {
+            product.CreatedAt = DateTime.Now;
+            _productRepository.Add(product);
+        }
 
-        public void Update(ProductModel product) => _productRepository.Update(product);
+        public void Update(ProductModel product)
+        {
+            _productRepository.Update(product);
+        }
 
-        public void Delete(int id) => _productRepository.Delete(id);
+        public void Delete(int id)
+        {
+            _productRepository.Delete(id);
+        }
     }
 }

@@ -21,6 +21,8 @@ namespace Warden.Data
         {
             modelBuilder.ApplyConfiguration(new ContactMap());
 
+            
+
             base.OnModelCreating(modelBuilder);
         }
     }

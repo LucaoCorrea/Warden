@@ -1,19 +1,29 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using Warden.Data;
 using Warden.Models;
 
 namespace Warden.Repositories
 {
     public class StockMovementRepository : IStockMovementRepository
     {
-        private readonly List<StockMovementModel> _movements = new();
+        private readonly AppDbContext _context;
 
-        public IEnumerable<StockMovementModel> GetAll() => _movements;
+        public StockMovementRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public IEnumerable<StockMovementModel> GetAll()
+        {
+            return _context.stockMovement.ToList();
+        }
 
         public void Add(StockMovementModel movement)
         {
-            movement.Id = _movements.Count > 0 ? _movements.Max(m => m.Id) + 1 : 1;
             movement.Date = DateTime.Now;
-            _movements.Add(movement);
+            _context.stockMovement.Add(movement);
+            _context.SaveChanges();
         }
     }
 }

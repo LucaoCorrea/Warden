@@ -1,27 +1,33 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Warden.Data;
 using Warden.Models;
 
 namespace Warden.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly List<ProductModel> _products = new();
+        private readonly AppDbContext _context;
 
-        public IEnumerable<ProductModel> GetAll() => _products;
+        public ProductRepository(AppDbContext context)
+        {
+            _context = context;
+        }
 
-        public ProductModel GetById(int id) => _products.FirstOrDefault(p => p.Id == id);
+        public IEnumerable<ProductModel> GetAll() => _context.Products.ToList();
+
+        public ProductModel GetById(int id) => _context.Products.FirstOrDefault(p => p.Id == id);
 
         public void Add(ProductModel product)
         {
-            product.Id = _products.Count > 0 ? _products.Max(p => p.Id) + 1 : 1;
             product.CreatedAt = DateTime.Now;
-            _products.Add(product);
+            _context.Products.Add(product);
+            _context.SaveChanges();
         }
 
         public void Update(ProductModel product)
         {
-            var existing = GetById(product.Id);
+            var existing = _context.Products.FirstOrDefault(p => p.Id == product.Id);
             if (existing != null)
             {
                 existing.Name = product.Name;
@@ -33,14 +39,19 @@ namespace Warden.Repositories
                 existing.SalePrice = product.SalePrice;
                 existing.ImageUrl = product.ImageUrl;
                 existing.Unit = product.Unit;
+
+                _context.SaveChanges();
             }
         }
 
         public void Delete(int id)
         {
-            var product = GetById(id);
+            var product = _context.Products.FirstOrDefault(p => p.Id == id);
             if (product != null)
-                _products.Remove(product);
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
         }
     }
 }

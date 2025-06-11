@@ -13,6 +13,7 @@ namespace Warden.Data.Map
             builder.HasOne(x => x.User)
                    .WithMany(u => u.Contacts)
                    .HasForeignKey(x => x.UserId);
+
         }
     }
 
