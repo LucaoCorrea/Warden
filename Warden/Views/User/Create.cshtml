@@ -6,46 +6,57 @@
 <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
 <div class="container py-5" data-aos="fade-up">
-    <h2 class="mb-4 text-success">➕ Cadastrar Novo Usuário</h2>
+    <h2 class="text-danger mb-4">👤 Cadastrar Usuário</h2>
 
-    <form asp-controller="User" asp-action="Create" method="post">
+    <form asp-controller="User" asp-action="Create" method="post" class="border p-4 rounded shadow-sm bg-light" data-aos="fade-right">
+        @Html.AntiForgeryToken()
+
         <div class="mb-3">
-            <label class="form-label">Nome</label>
-            <input type="text" asp-for="Name" class="form-control" placeholder="Digite o nome">
-            @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger" })
+            <label asp-for="Name" class="form-label">🧑 Nome</label>
+            <input asp-for="Name" class="form-control" placeholder="Digite o nome do usuário" />
+            <span asp-validation-for="Name" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">E-mail</label>
-            <input type="text" asp-for="Email" class="form-control" placeholder="Digite o e-mail">
-            @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+            <label asp-for="Email" class="form-label">📧 E-mail</label>
+            <input asp-for="Email" class="form-control" placeholder="Digite o e-mail do usuário" />
+            <span asp-validation-for="Email" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Login</label>
-            <input type="text" asp-for="Login" class="form-control" placeholder="Digite o login">
-            @Html.ValidationMessageFor(x => x.Login, "", new { @class = "text-danger" })
+            <label asp-for="Login" class="form-label">🔐 Login</label>
+            <input asp-for="Login" class="form-control" placeholder="Digite o login do usuário" />
+            <span asp-validation-for="Login" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Perfil</label>
+            <label asp-for="Profile" class="form-label">🧭 Perfil</label>
             <select asp-for="Profile" class="form-select">
                 <option value="">Selecione</option>
                 <option value="@ProfileEnum.Admin">Administrador</option>
                 <option value="@ProfileEnum.User">Padrão</option>
             </select>
-            @Html.ValidationMessageFor(x => x.Profile, "", new { @class = "text-danger" })
+            <span asp-validation-for="Profile" class="text-danger"></span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Senha</label>
-            <input type="password" asp-for="Password" class="form-control" placeholder="Digite a senha">
-            @Html.ValidationMessageFor(x => x.Password, "", new { @class = "text-danger" })
+            <label asp-for="Password" class="form-label">🔒 Senha</label>
+            <input asp-for="Password" type="password" class="form-control" placeholder="Digite a senha" />
+            <span asp-validation-for="Password" class="text-danger"></span>
         </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-success">💾 Cadastrar</button>
-            <a asp-action="Index" asp-controller="User" class="btn btn-secondary">↩️ Voltar</a>
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" asp-controller="User" class="btn btn-outline-secondary">⬅️ Voltar</a>
+            <button type="submit" class="btn btn-danger">💾 Cadastrar</button>
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+    </script>
+}

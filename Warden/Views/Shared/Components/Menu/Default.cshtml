@@ -1,42 +1,44 @@
 ﻿@model UserModel
 
-<nav class="navbar navbar-expand-lg px-4">
-    <a class="navbar-brand text-primary fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-        Olá, @Model.Name
-    </a>
+<nav class="">
+    <div class="container-fluid d-flex justify-content-between align-items-center">
+        <a class="navbar-brand text-danger fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+            Olá, @Model.Name
+        </a>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-    <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Página Inicial</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link text-dark" asp-controller="Contact" asp-action="Index">Contatos</a>
-            </li>
-            @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
-            {
+        <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
+            <ul class="navbar-nav me-3">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-controller="User" asp-action="Index">Usuários</a>
+                    <a class="nav-link text-danger" asp-controller="Home" asp-action="Index">Página Inicial</a>
                 </li>
-            }
-        </ul>
-
-        <div class="dropdown">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                ⚙️ Menu
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                <li>
-                    <a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a>
+                <li class="nav-item">
+                    <a class="nav-link text-danger" asp-controller="Contact" asp-action="Index">Contatos</a>
                 </li>
-                <li>
-                    <a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a>
-                </li>
+                @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" asp-controller="User" asp-action="Index">Usuários</a>
+                    </li>
+                }
             </ul>
+
+            <div class="dropdown">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    ⚙️ Menu
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                    <li>
+                        <a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </nav>
