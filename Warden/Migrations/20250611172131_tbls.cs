@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Warden.Migrations
 {
     /// <inheritdoc />
-    public partial class Tbls : Migration
+    public partial class tbls : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

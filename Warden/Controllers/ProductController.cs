@@ -21,6 +21,14 @@ namespace Warden.Controllers
 
         public IActionResult Create() => View();
 
+        public IActionResult Delete(int id)
+        {
+            var product = _service.GetById(id);
+            if (product == null)
+                return NotFound();
+            return View(product);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(ProductModel product)
@@ -29,7 +37,7 @@ namespace Warden.Controllers
                 return View(product);
 
             _service.Add(product);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)
@@ -54,14 +62,16 @@ namespace Warden.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(ProductModel product)
         {
-            if (!ModelState.IsValid)
+            if (!ModelState.IsValid) {
                 return View(product);
-
+            }
+               
             _service.Update(product);
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             _service.Delete(id);

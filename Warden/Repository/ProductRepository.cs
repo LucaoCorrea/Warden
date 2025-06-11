@@ -30,19 +30,22 @@ namespace Warden.Repositories
             var existing = _context.Products.FirstOrDefault(p => p.Id == product.Id);
             if (existing != null)
             {
+                // atualiza campos manualmente
                 existing.Name = product.Name;
                 existing.SKU = product.SKU;
-                existing.Description = product.Description;
                 existing.Category = product.Category;
                 existing.Stock = product.Stock;
                 existing.CostPrice = product.CostPrice;
                 existing.SalePrice = product.SalePrice;
-                existing.ImageUrl = product.ImageUrl;
                 existing.Unit = product.Unit;
+                existing.ImageUrl = product.ImageUrl;
 
+                // NÃO atualiza CreatedAt — ele é da criação, não da edição
                 _context.SaveChanges();
             }
         }
+
+
 
         public void Delete(int id)
         {

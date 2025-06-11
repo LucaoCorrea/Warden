@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Warden.Data;
 using Warden.Models;
 using Warden.Repositories;
 
@@ -11,6 +11,7 @@ namespace Warden.Services
         public ProductService(IProductRepository productRepository)
         {
             _productRepository = productRepository;
+
         }
 
         public IEnumerable<ProductModel> GetAll() => _productRepository.GetAll();

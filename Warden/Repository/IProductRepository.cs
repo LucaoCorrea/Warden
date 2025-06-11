@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Warden.Models;
+﻿using Warden.Models;
 
 namespace Warden.Repositories
 {

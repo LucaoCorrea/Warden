@@ -12,8 +12,8 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250611135245_Tbls")]
-    partial class Tbls
+    [Migration("20250611172131_tbls")]
+    partial class tbls
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
