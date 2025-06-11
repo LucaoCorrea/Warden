@@ -1,11 +1,19 @@
 ﻿@model UserModel
 @{
-    ViewData["Title"] = "Confirmação apagar usuário";
+    ViewData["Title"] = "Confirmação de Exclusão";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<div class="text-center">
-    <h3>Realmente deseja apagar o usuário (@Model.Name)?</h3>
+<div class="container py-5 text-center" data-aos="fade-up">
+    <h3 class="text-danger mb-4">❗ Deseja realmente apagar o usuário <strong>@Model.Name</strong>?</h3>
+
+    <div class="d-flex justify-content-center gap-3">
+        <a class="btn btn-danger" asp-action="Delete" asp-controller="User" asp-route-id="@Model.Id">🗑️ Confirmar Exclusão</a>
+        <a class="btn btn-secondary" asp-action="Index" asp-controller="User">↩️ Cancelar</a>
+    </div>
 </div>
 
-<a class="btn btn-primary btn-block" asp-action="Index" asp-controller="User" role="button">Cancelar exclusão</a>
-<a class="btn btn-danger btn-block" asp-action="Delete" asp-controller="User" asp-route-id="@Model.Id" role="button">Confirmar exclusão</a>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+</script>

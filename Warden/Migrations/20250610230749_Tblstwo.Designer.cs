@@ -12,8 +12,8 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250609235344_Tbl")]
-    partial class Tbl
+    [Migration("20250610230749_Tblstwo")]
+    partial class Tblstwo
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -44,8 +44,7 @@ namespace Warden.Migrations
 
                     b.Property<string>("Phone")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("UserId")
                         .HasColumnType("int");

@@ -1,50 +1,56 @@
 ﻿@using Warden.Enums
 @model EditPasswordModel
 @{
-    ViewData["Title"] = "Alterar senha do usuário";
+    ViewData["Title"] = "Alterar Senha";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<div class="text-center">
-    <h1 class="display-4">Alterar senha do usuário</h1>
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="mb-4 text-warning">🔄 Alterar Senha do Usuário</h2>
+
+    @if (TempData["MensagemSucesso"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert" data-aos="fade-right">
+            @TempData["MensagemSucesso"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+
+    @if (TempData["MensagemErro"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert" data-aos="fade-right">
+            @TempData["MensagemErro"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    }
+
+    <form asp-controller="EditPassword" asp-action="Edit" method="post">
+        <div class="mb-3">
+            <label class="form-label">Senha Atual</label>
+            <input type="password" asp-for="NowPassword" class="form-control" placeholder="Digite a senha atual">
+            @Html.ValidationMessageFor(x => x.NowPassword, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Nova Senha</label>
+            <input type="password" asp-for="NewPassword" class="form-control" placeholder="Digite a nova senha">
+            @Html.ValidationMessageFor(x => x.NewPassword, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Confirmar Nova Senha</label>
+            <input type="password" asp-for="ConfirmNewPassword" class="form-control" placeholder="Confirme a nova senha">
+            @Html.ValidationMessageFor(x => x.ConfirmNewPassword, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-warning">🔒 Alterar Senha</button>
+            <a class="btn btn-secondary" asp-action="Index" asp-controller="Home">↩️ Voltar</a>
+        </div>
+    </form>
 </div>
 
-@if (TempData["MensagemSucesso"] != null)
-{
-    <div class="alert alert-success" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
-        @TempData["MensagemSucesso"]
-    </div>
-}
-
-@if (TempData["MensagemErro"] != null)
-{
-    <div class="alert alert-danger" role="alert">
-        <button type="button" class="btn btn-danger btn-sm close-alert" data-bs-dismiss="alert" aria-label="Close">X</button>
-        @TempData["MensagemErro"]
-    </div>
-}
-
-<form asp-controller="EditPassword" asp-action="Edit" method="post">
-
-    <div class="form-group">
-        <label for="nowPassword" class="form-label">Senha Atual</label>
-        <input type="password" asp-for="NowPassword" class="form-control" placeholder="Digite a senha atual do usuário">
-        @Html.ValidationMessageFor(x => x.NowPassword)
-    </div>
-
-    <div class="form-group">
-        <label for="newPasword" class="form-label">Nova Senha</label>
-        <input type="password" asp-for="NewPassword" class="form-control" placeholder="Digite a nova senha do usuário">
-        @Html.ValidationMessageFor(x => x.NewPassword)
-    </div>
-
-    <div class="form-group">
-        <label for="confirmNewPassword" class="form-label">Confirmar Nova Senha</label>
-        <input type="password" asp-for="ConfirmNewPassword" class="form-control" placeholder="Digite a confirmação da nova senha do usuário">
-        @Html.ValidationMessageFor(x => x.ConfirmNewPassword)
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-block">Alterar</button>
-    <a class="btn btn-secondary btn-block" asp-action="Index" asp-controller="Home" role="button">Voltar</a>
-
-</form>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+</script>

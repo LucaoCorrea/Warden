@@ -13,7 +13,7 @@ namespace Warden.Models
         public string NewPassword { get; set; }
 
         [Required(ErrorMessage = "Confirme a nova senha do usuário")]
-        [Compare("NovaSenha", ErrorMessage = "Senha não confere com a nova senha")]
+        [Compare("NewPassword", ErrorMessage = "Senha não confere com a nova senha")]
         public string ConfirmNewPassword { get; set; }
 
     }

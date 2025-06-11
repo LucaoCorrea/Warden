@@ -1,12 +1,14 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Warden.Data;
-using Warden.Helper; 
+using Warden.Helper;
+using Warden.Models;
 using Warden.Repository;
-                 
+using Warden.Enums;
+
 namespace Warden
 {
-   public class Startup
+    public class Startup
     {
         public Startup(IConfiguration configuration)
         {
@@ -48,6 +50,7 @@ namespace Warden
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -63,6 +66,34 @@ namespace Warden
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
             });
+
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                CreateDefaultUser(context);
+            }
+        }
+
+        // aqui instancia um user admin, para que possa melhorar a versão de desenvolvimento <- e facilitar a vida do dev =)
+        private void CreateDefaultUser(AppDbContext context)
+        {
+            if (!context.Users.Any(u => u.Login == "admin"))
+            {
+                var user = new UserModel
+                {
+                    Name = "adm",
+                    Login = "admin",
+                    Email = "admin@warden.com",
+                    Profile = ProfileEnum.Admin,
+                    Password = "123",
+                    CreatedAt = DateTime.Now
+                };
+
+                user.SetPasswordHash();
+
+                context.Users.Add(user);
+                context.SaveChanges();
+            }
         }
     }
 }

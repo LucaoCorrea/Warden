@@ -1,46 +1,46 @@
 ﻿@using Warden.Enums
 @model UserModel
 @{
-    ViewData["Title"] = "Editar usuário";
+    ViewData["Title"] = "Editar Usuário";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Editar usuário</h1>
+<div class="container py-5">
+    <h2 class="mb-4 text-primary">✏️ Editar Usuário</h2>
+
+    <form asp-controller="User" asp-action="Edit" method="post">
+        <input type="hidden" asp-for="Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Nome</label>
+            <input type="text" asp-for="Name" class="form-control" placeholder="Digite o nome">
+            @Html.ValidationMessageFor(x => x.Name, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">E-mail</label>
+            <input type="text" asp-for="Email" class="form-control" placeholder="Digite o e-mail">
+            @Html.ValidationMessageFor(x => x.Email, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Login</label>
+            <input type="text" asp-for="Login" class="form-control" placeholder="Digite o login">
+            @Html.ValidationMessageFor(x => x.Login, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Perfil</label>
+            <select asp-for="Profile" class="form-select">
+                <option value="">Selecione</option>
+                <option value="@ProfileEnum.Admin">Administrador</option>
+                <option value="@ProfileEnum.User">Padrão</option>
+            </select>
+            @Html.ValidationMessageFor(x => x.Profile, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-primary">💾 Salvar Alterações</button>
+            <a asp-action="Index" asp-controller="User" class="btn btn-secondary">↩️ Voltar</a>
+        </div>
+    </form>
 </div>
-
-
-<form asp-controller="User" asp-action="Edit" method="post">
-
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label for="nome" class="form-label">Nome</label>
-        <input type="text" asp-for="Name" class="form-control" placeholder="Digite o nome do usuário">
-        @Html.ValidationMessageFor(x => x.Name)
-    </div>
-
-    <div class="form-group">
-        <label for="nome" class="form-label">E-mail</label>
-        <input type="text" asp-for="Email" class="form-control" placeholder="Digite o e-mail do usuário">
-        @Html.ValidationMessageFor(x => x.Email)
-    </div>
-
-    <div class="form-group">
-        <label for="nome" class="form-label">Login</label>
-        <input type="text" asp-for="Login" class="form-control" placeholder="Digite o login do usuário">
-        @Html.ValidationMessageFor(x => x.Login)
-    </div>
-
-    <div class="form-group">
-        <label for="nome" class="form-label">Perfil</label>
-        <select asp-for="Profile" class="form-control">
-            <option value="">Selecione</option>
-            <option value="@ProfileEnum.Admin">Administrador</option>
-            <option value="@ProfileEnum.User">Padrão</option>
-        </select>
-        @Html.ValidationMessageFor(x => x.Profile)
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-block">Editar</button>
-    <a class="btn btn-secondary btn-block" asp-action="Index" asp-controller="User" role="button">Voltar</a>
-
-</form>

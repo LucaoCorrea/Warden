@@ -1,53 +1,47 @@
 ﻿@model ContactModel
 @{
-    ViewData["Title"] = "Criar contato";
+    ViewData["Title"] = "Criar Contato";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<div class="text-center">
-    <h1 class="display-4">Cadastrar contato</h1>
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="text-danger mb-4">📋 Cadastrar Contato</h2>
+
+    <form asp-action="Create" method="post" class="border p-4 rounded shadow-sm bg-light" data-aos="fade-right">
+        @Html.AntiForgeryToken()
+
+        <div class="mb-3">
+            <label asp-for="Name" class="form-label">👤 Nome</label>
+            <input asp-for="Name" class="form-control" placeholder="Digite o nome do contato" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">📧 Email</label>
+            <input asp-for="Email" class="form-control" placeholder="Digite o e-mail do contato" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Phone" class="form-label">📱 Celular</label>
+            <input asp-for="Phone" class="form-control" placeholder="Digite o celular do contato" id="Phone" />
+            <span asp-validation-for="Phone" class="text-danger"></span>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
+            <button type="submit" class="btn btn-danger">💾 Adicionar</button>
+        </div>
+    </form>
 </div>
-
-<form asp-controller="Contact" asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
-    <div class="form-group mb-3">
-        <label asp-for="Name" class="form-label"></label>
-        <input asp-for="Name" class="form-control" placeholder="Digite o nome do contato">
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Email" class="form-label"></label>
-        <input asp-for="Email" class="form-control" placeholder="Digite o e-mail do contato">
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group mb-3">
-        <label asp-for="Phone" class="form-label"></label>
-        <input asp-for="Phone" class="form-control" placeholder="Digite o celular do contato">
-        <span asp-validation-for="Phone" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary btn-block">Adicionar</button>
-    <a class="btn btn-secondary btn-block" asp-action="Index" asp-controller="Contact" role="button">Voltar</a>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#Phone').mask('(00) 00000-0000');
-
-            // Validação adicional para evitar submissão com campos inválidos
-            $('form').submit(function(e) {
-                if (!$(this).valid()) {
-                    e.preventDefault();
-                    return false;
-                }
-                return true;
-            });
-        });
+        AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+        $('#Phone').mask('(00) 00000-0000');
     </script>
 }

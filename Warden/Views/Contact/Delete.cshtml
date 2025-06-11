@@ -1,14 +1,20 @@
 ﻿@model ContactModel
 @{
-    ViewData["Title"] = "Deletar Contatos";
+    ViewData["Title"] = "Excluir Contato";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<div class="text-center">
-    <h3 class="display-4">Realmente deseja Apagar o Contato: @Model.Name?</h3>
+<div class="container py-5 text-center" data-aos="zoom-in">
+    <h3 class="text-danger mb-4">🗑️ Deseja realmente excluir o contato: <strong>@Model.Name</strong>?</h3>
+
+    <form asp-action="DeleteConfirmed" method="post" class="d-inline-block">
+        <input type="hidden" name="id" value="@Model.Id" />
+        <button type="submit" class="btn btn-danger">✅ Confirmar Exclusão</button>
+    </form>
+    <a class="btn btn-outline-secondary ms-2" asp-action="Index">❌ Cancelar</a>
 </div>
 
-<form asp-controller="Contact" asp-action="DeleteConfirmed" method="post" style="display:inline;">
-    <input type="hidden" name="id" value="@Model.Id" />
-    <button type="submit" class="btn btn-danger">Confirmar Exclusão</button>
-</form>
-<a class="btn btn-secondary" asp-controller="Contact" asp-action="Index">Cancelar Exclusão</a>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+</script>

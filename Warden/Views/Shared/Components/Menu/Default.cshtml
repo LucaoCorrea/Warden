@@ -1,32 +1,42 @@
 ﻿@model UserModel
 
-<a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Olá, @Model.Name</a>
-<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-        aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-</button>
-<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-    <ul class="navbar-nav flex-grow-1">
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Página Inicial</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Contact" asp-action="Index">Contatos</a>
-        </li>
+<nav class="navbar navbar-expand-lg px-4">
+    <a class="navbar-brand text-primary fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+        Olá, @Model.Name
+    </a>
 
-        @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
-        {
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="mainNavbar">
+        <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="Index">Usuários</a>
+                <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Página Inicial</a>
             </li>
-        }
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-controller="Contact" asp-action="Index">Contatos</a>
+            </li>
+            @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
+            {
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="User" asp-action="Index">Usuários</a>
+                </li>
+            }
+        </ul>
 
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="EditPassword" asp-action="Index">Alterar Senha</a>
-        </li>
-
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Logout">Sair</a>
-        </li>
-    </ul>
-</div>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                ⚙️ Menu
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
+                <li>
+                    <a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a>
+                </li>
+                <li>
+                    <a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
