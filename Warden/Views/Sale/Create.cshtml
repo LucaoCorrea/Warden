@@ -3,16 +3,25 @@
 @{
     ViewData["Title"] = "Nova Venda";
     var products = ViewBag.Products as List<Warden.Models.ProductModel>;
+    var success = ViewBag.Success ?? false;
+    var saleId = ViewBag.SaleId ?? 0;
 }
-<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
 
 <div class="container py-5" data-aos="fade-up">
     <h2 class="mb-4 text-success">🛒 Nova Venda</h2>
 
+    @if (success)
+    {
+        <div class="alert alert-success">
+            Venda finalizada com sucesso! 🎉
+            <a class="btn btn-primary ms-3" href="@Url.Action("DownloadInvoice", new { saleId })" target="_blank">📄 Baixar Nota Fiscal</a>
+        </div>
+    }
+
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()
 
-        <!-- Informações da Venda -->
         <div class="row mb-4 g-3">
             <div class="col-md-6">
                 <label class="form-label">👤 Usuário</label>
@@ -24,14 +33,13 @@
             </div>
         </div>
 
-        <!-- Catálogo de Produtos -->
         <h4 class="mb-3">🧃 Produtos Disponíveis</h4>
         <div class="row row-cols-2 row-cols-md-4 g-3 mb-4">
             @foreach (var product in products)
             {
                 <div class="col">
                     <div class="card h-100 shadow-sm">
-                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 150px; object-fit: cover;">
+                        <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 150px; object-fit: cover;" />
                         <div class="card-body d-flex flex-column justify-content-between">
                             <h6 class="card-title">@product.Name</h6>
                             <p class="mb-2 text-muted">R$ @product.SalePrice.ToString("F2")</p>
@@ -45,7 +53,6 @@
             }
         </div>
 
-        <!-- Itens adicionados -->
         <h4 class="mb-3">🧾 Itens da Venda</h4>
         <table class="table table-striped">
             <thead class="table-success">
@@ -61,10 +68,8 @@
             </tbody>
         </table>
 
-        <!-- Hidden inputs -->
         <div id="hiddenItems"></div>
 
-        <!-- Ações -->
         <div class="d-flex justify-content-between mt-4">
             <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
             <button type="submit" class="btn btn-success">💰 Finalizar Venda</button>

@@ -28,8 +28,7 @@ namespace Warden.Services
                 .ToList();
         }
 
-
-        public void ProcessSale(SaleModel sale)
+        public int ProcessSale(SaleModel sale)
         {
             foreach (var item in sale.Items)
             {
@@ -45,12 +44,21 @@ namespace Warden.Services
                     ProductId = item.ProductId,
                     Quantity = item.Quantity,
                     Type = MovementTypeEnum.Saída,
-                    TotalValue = item.Quantity * product.SalePrice, 
-                                                          
+                    TotalValue = item.Quantity * product.SalePrice,
                 });
             }
 
             _saleRepo.Add(sale);
+            _context.SaveChanges();
+
+            return sale.Id;
+        }
+
+        public SaleModel GetById(int id)
+        {
+            return _context.Sales
+                .Include(s => s.Items)
+                .FirstOrDefault(s => s.Id == id);
         }
     }
 }

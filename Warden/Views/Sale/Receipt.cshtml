@@ -1,0 +1,37 @@
+﻿@model Warden.Models.SaleModel
+@{
+    ViewData["Title"] = "Venda Concluída";
+}
+<div class="container py-5">
+    <h2 class="text-success mb-4">✅ Venda Concluída com Sucesso!</h2>
+    <p><strong>Usuário:</strong> @Model.UserName</p>
+    <p><strong>Forma de Pagamento:</strong> @Model.PaymentMethod</p>
+
+    <h4>Itens Vendidos:</h4>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produto ID</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.Quantity</td>
+                    <td>R$ @item.UnitPrice.ToString("F2")</td>
+                    <td>R$ @(item.Quantity* item.UnitPrice)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <p><strong>Total da Venda: </strong>R$ @Model.Items.Sum(i => i.Quantity * i.UnitPrice).ToString("F2")</p>
+
+    <a asp-action="DownloadReceipt" asp-route-id="@Model.Id" class="btn btn-primary">⬇️ Baixar Nota Fiscal</a>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Voltar ao Início</a>
+</div>
