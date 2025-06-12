@@ -2,11 +2,10 @@
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
-using System.IO;
 using Warden.Models;
 using Warden.Services;
 using Warden.Repositories;
-using System;
+using ClosedXML.Excel;
 
 namespace Warden.Controllers
 {
@@ -179,6 +178,50 @@ namespace Warden.Controllers
             using var ms = new MemoryStream();
             document.GeneratePdf(ms);
             return ms.ToArray();
+        }
+
+        // exportar vendas para Excel
+        [HttpPost]
+        public IActionResult Export(DateTime startDate, DateTime endDate)
+        {
+            // Ajusta o horário para o fim do dia final (para incluir vendas daquele dia)
+            endDate = endDate.Date.AddDays(1).AddTicks(-1);
+
+            // Busca as vendas no intervalo
+            var sales = _saleService.GetAll()
+                        .Where(s => s.SaleDate >= startDate && s.SaleDate <= endDate)
+                        .ToList();
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Relatório de Vendas");
+
+            worksheet.Cell("A1").Value = "ID Venda";
+            worksheet.Cell("B1").Value = "Data";
+            worksheet.Cell("C1").Value = "Vendedor";
+            worksheet.Cell("D1").Value = "Forma de Pagamento";
+            worksheet.Cell("E1").Value = "Quantidade Itens";
+
+            int currentRow = 2;
+
+            foreach (var sale in sales)
+            {
+                worksheet.Cell(currentRow, 1).Value = sale.Id;
+                worksheet.Cell(currentRow, 2).Value = sale.SaleDate.ToString("dd/MM/yyyy HH:mm");
+                worksheet.Cell(currentRow, 3).Value = sale.UserName;
+                worksheet.Cell(currentRow, 4).Value = sale.PaymentMethod.ToString();
+                worksheet.Cell(currentRow, 5).Value = sale.Items?.Count ?? 0;
+                currentRow++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            var fileName = $"RelatorioVendas_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}.xlsx";
+
+            return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        fileName);
         }
     }
 }
