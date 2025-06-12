@@ -8,12 +8,12 @@
 <a asp-action="Create" class="btn btn-danger mb-3">+ Nova Movimentação</a>
 
 <style>
-    .border-entrada {
+    .border-saida {
         border-left: 5px solid green;
     }
 
-    .border-saida {
-        border-left: 5px solid red;
+    .border-entrada {
+        border-left: 5px solid yellow;
     }
 </style>
 
@@ -23,6 +23,7 @@
             <th>Produto</th>
             <th>Tipo</th>
             <th>Quantidade</th>
+            <th>Valor Total</th>
             <th>Data</th>
         </tr>
     </thead>
@@ -36,6 +37,7 @@
                 <td>@item.Product?.Name</td>
                 <td>@item.Type</td>
                 <td>@item.Quantity</td>
+                <td>@item.TotalValue.ToString("C")</td>
                 <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
             </tr>
         }

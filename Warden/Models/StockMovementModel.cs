@@ -14,6 +14,8 @@ namespace Warden.Models
 
         public int Quantity { get; set; }
 
+        public decimal TotalValue { get; set; }
+
         public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
 

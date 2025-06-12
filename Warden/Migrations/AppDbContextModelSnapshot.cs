@@ -119,6 +119,9 @@ namespace Warden.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("TotalValue")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("Type")
                         .HasColumnType("int");
 

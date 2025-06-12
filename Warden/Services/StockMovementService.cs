@@ -29,6 +29,7 @@ namespace Warden.Services
             if (model.Type == MovementTypeEnum.Entrada)
             {
                 product.Stock += model.Quantity;
+                model.TotalValue = model.Quantity * product.CostPrice;
             }
             else if (model.Type == MovementTypeEnum.Saída)
             {
@@ -36,11 +37,13 @@ namespace Warden.Services
                     throw new Exception("Estoque insuficiente para realizar a saída.");
 
                 product.Stock -= model.Quantity;
+                model.TotalValue = model.Quantity * product.SalePrice;
             }
 
             _movementRepository.Add(model);
             _productRepository.Update(product);
         }
+
 
     }
 }
