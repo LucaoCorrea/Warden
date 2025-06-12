@@ -84,6 +84,8 @@ namespace Warden
             {
                 var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 CreateDefaultUser(context);
+                CreateDefaultContact(context);
+                CreateDefaultProduct(context);
             }
         }
 
@@ -104,6 +106,46 @@ namespace Warden
                 user.SetPasswordHash();
 
                 context.Users.Add(user);
+                context.SaveChanges();
+            }
+        }
+
+        private void CreateDefaultContact(AppDbContext context)
+        {
+            if (!context.Contacts.Any(c => c.Email == "lucas@warden.com"))
+            {
+                var contato = new ContactModel
+                {
+                    Name = "Lucas Leonardi",
+                    Email = "lucas@warden.com",
+                    Phone = "(11) 91234-5678",
+                    UserId = context.Users.FirstOrDefault(u => u.Login == "admin")?.Id
+                };
+
+                context.Contacts.Add(contato);
+                context.SaveChanges();
+            }
+        }
+
+        private void CreateDefaultProduct(AppDbContext context)
+        {
+            if (!context.Products.Any(p => p.SKU == "REF-COCA-1L"))
+            {
+                var produto = new ProductModel
+                {
+                    Name = "Coca Cola 1L",
+                    SKU = "REF-COCA-1L",
+                    Description = "Refrigerante Coca Cola de 1 Litro.",
+                    Category = "Bebidas",
+                    Stock = 50,
+                    CostPrice = 11,
+                    SalePrice = 13.90m,
+                    ImageUrl = "https://www.extramercado.com.br/img/uploads/1/844/19796844.jpg",
+                    Unit = "un",
+                    CreatedAt = DateTime.Now
+                };
+
+                context.Products.Add(produto);
                 context.SaveChanges();
             }
         }
