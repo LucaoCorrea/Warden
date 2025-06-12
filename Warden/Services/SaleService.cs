@@ -28,6 +28,13 @@ namespace Warden.Services
                 .ToList();
         }
 
+        public SaleModel GetById(int id)
+        {
+            return _context.Sales
+                .Include(s => s.Items)
+                .FirstOrDefault(s => s.Id == id);
+        }
+
         public int ProcessSale(SaleModel sale)
         {
             foreach (var item in sale.Items)
@@ -49,16 +56,7 @@ namespace Warden.Services
             }
 
             _saleRepo.Add(sale);
-            _context.SaveChanges();
-
             return sale.Id;
-        }
-
-        public SaleModel GetById(int id)
-        {
-            return _context.Sales
-                .Include(s => s.Items)
-                .FirstOrDefault(s => s.Id == id);
         }
     }
 }

@@ -1,37 +1,34 @@
 ﻿@model Warden.Models.SaleModel
-@{
-    ViewData["Title"] = "Venda Concluída";
-}
-<div class="container py-5">
-    <h2 class="text-success mb-4">✅ Venda Concluída com Sucesso!</h2>
-    <p><strong>Usuário:</strong> @Model.UserName</p>
-    <p><strong>Forma de Pagamento:</strong> @Model.PaymentMethod</p>
 
-    <h4>Itens Vendidos:</h4>
-    <table class="table table-striped">
-        <thead>
+<h2>Detalhes da Venda #@Model.Id</h2>
+<p>Vendedor: @Model.UserName</p>
+<p>Forma de Pagamento: @Model.PaymentMethod</p>
+
+<h3>Itens</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Produto ID</th>
+            <th>Quantidade</th>
+            <th>Preço Unitário</th>
+            <th>Total</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
             <tr>
-                <th>Produto ID</th>
-                <th>Quantidade</th>
-                <th>Preço Unitário</th>
-                <th>Total</th>
+                <td>@item.ProductId</td>
+                <td>@item.Quantity</td>
+                <td>R$ @item.UnitPrice.ToString("F2")</td>
+                <td>R$ @(item.Quantity* item.UnitPrice)</td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.Items)
-            {
-                <tr>
-                    <td>@item.ProductId</td>
-                    <td>@item.Quantity</td>
-                    <td>R$ @item.UnitPrice.ToString("F2")</td>
-                    <td>R$ @(item.Quantity* item.UnitPrice)</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
-    <p><strong>Total da Venda: </strong>R$ @Model.Items.Sum(i => i.Quantity * i.UnitPrice).ToString("F2")</p>
+<p><strong>Total da Venda: R$ @Model.Items.Sum(i => i.Quantity * i.UnitPrice).ToString("F2")</strong></p>
 
-    <a asp-action="DownloadReceipt" asp-route-id="@Model.Id" class="btn btn-primary">⬇️ Baixar Nota Fiscal</a>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Voltar ao Início</a>
-</div>
+<a asp-action="DownloadReceipt" asp-route-id="@Model.Id" class="btn btn-primary">
+    📄 Baixar Nota Fiscal
+</a>

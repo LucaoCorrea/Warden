@@ -1,7 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
+using System.IO;
 using Warden.Models;
 using Warden.Services;
 using Warden.Repositories;
+using System;
 
 namespace Warden.Controllers
 {
@@ -64,29 +69,116 @@ namespace Warden.Controllers
             var sale = _saleService.GetById(id);
             if (sale == null) return NotFound();
 
-            var receiptText = GenerateFakeReceiptText(sale);
+            var pdfBytes = GeneratePdfReceipt(sale);
 
-            var bytes = System.Text.Encoding.UTF8.GetBytes(receiptText);
-            return File(bytes, "text/plain", $"NotaFiscal_Venda_{id}.txt");
+            return File(pdfBytes, "application/pdf", $"NotaFiscal_Venda_{id}.pdf");
         }
 
-        private string GenerateFakeReceiptText(SaleModel sale)
+
+        // gerar nota fiscal em PDF
+        private byte[] GeneratePdfReceipt(SaleModel sale)
         {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("NOTA FISCAL (FALSA)");
-            sb.AppendLine($"Venda ID: {sale.Id}");
-            sb.AppendLine($"Usuário: {sale.UserName}");
-            sb.AppendLine($"Forma de Pagamento: {sale.PaymentMethod}");
-            sb.AppendLine("Itens:");
-            decimal total = 0;
-            foreach (var item in sale.Items)
+            var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "logo.png");
+
+            var document = Document.Create(container =>
             {
-                sb.AppendLine($"- Produto ID: {item.ProductId} | Qtde: {item.Quantity} | Unitário: R$ {item.UnitPrice:F2} | Total: R$ {(item.Quantity * item.UnitPrice):F2}");
-                total += item.Quantity * item.UnitPrice;
-            }
-            sb.AppendLine($"TOTAL DA VENDA: R$ {total:F2}");
-            sb.AppendLine("Obrigado pela compra!");
-            return sb.ToString();
+                container.Page(page =>
+                {
+                    page.Margin(30);
+                    page.Size(PageSizes.A4);
+                    page.PageColor(Colors.White);
+                    page.DefaultTextStyle(x => x.FontSize(12).FontColor(Colors.Black));
+
+                    page.Header()
+                        .Height(80)
+                        .Row(row =>
+                        {
+                            row.RelativeColumn()
+                            .AlignMiddle()
+                            .Image(logoPath, ImageScaling.FitHeight);
+
+                            row.RelativeColumn()
+                               .AlignMiddle()
+                               .Text("Warden - Sistema de Estoque")
+                               .FontColor(Colors.Red.Darken1);
+
+
+                            row.ConstantColumn(250)
+                               .AlignMiddle()
+                               .Text("NOTA FISCAL (FALSA)")
+                               .SemiBold()
+                               .FontSize(20)
+                               .FontColor(Colors.Green.Darken2)
+                               .AlignRight();
+                        });
+
+                    page.Content()
+                        .PaddingVertical(10)
+                        .Column(col =>
+                        {
+                            col.Spacing(5);
+
+                            col.Item().Text($"Venda ID: {sale.Id}").SemiBold();
+                            col.Item().Text($"Vendedor: {sale.UserName}");
+                            col.Item().Text($"Forma de Pagamento: {sale.PaymentMethod}");
+
+                            col.Item().PaddingVertical(10).LineHorizontal(1).LineColor(Colors.Grey.Lighten2);
+
+                            col.Item().Text("Itens da Venda:").Bold().FontSize(14);
+
+                            col.Item().Table(table =>
+                            {
+                                table.ColumnsDefinition(columns =>
+                                {
+                                    columns.ConstantColumn(250);
+                                    columns.ConstantColumn(50);
+                                    columns.ConstantColumn(80);
+                                    columns.ConstantColumn(80);
+                                });
+
+                                table.Header(header =>
+                                {
+                                    header.Cell().Text("Produto").Bold();
+                                    header.Cell().AlignRight().Text("Qtd").Bold();
+                                    header.Cell().AlignRight().Text("Unitário").Bold();
+                                    header.Cell().AlignRight().Text("Total").Bold();
+                                });
+
+                                decimal totalSale = 0;
+
+                                foreach (var item in sale.Items)
+                                {
+                                    decimal totalItem = item.Quantity * item.UnitPrice;
+                                    totalSale += totalItem;
+
+                                    table.Cell().Text($"Produto #{item.ProductId}");
+                                    table.Cell().AlignRight().Text(item.Quantity.ToString());
+                                    table.Cell().AlignRight().Text($"R$ {item.UnitPrice:F2}");
+                                    table.Cell().AlignRight().Text($"R$ {totalItem:F2}");
+                                }
+
+                                table.Footer(footer =>
+                                {
+                                    footer.Cell().ColumnSpan(3).AlignRight().Text("TOTAL DA VENDA:").Bold();
+                                    footer.Cell().AlignRight().Text($"R$ {totalSale:F2}").Bold();
+                                });
+                            });
+
+                            col.Item().PaddingTop(20).Text("Obrigado pela compra e pela preferência de usar WARDEN!").Italic().FontSize(14).FontColor(Colors.Grey.Darken1);
+                        });
+
+                    page.Footer()
+                        .AlignCenter()
+                        .Text(text =>
+                        {
+                            text.Span("Warden © " + DateTime.Now.Year);
+                        });
+                });
+            });
+
+            using var ms = new MemoryStream();
+            document.GeneratePdf(ms);
+            return ms.ToArray();
         }
     }
 }

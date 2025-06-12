@@ -1,12 +1,6 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Linq;
+using QuestPDF;
+using QuestPDF.Infrastructure;
 using Warden.Data;
 using Warden.Enums;
 using Warden.Helper;
@@ -22,6 +16,7 @@ namespace Warden
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            QuestPDF.Settings.License = LicenseType.Community;
         }
 
         public IConfiguration Configuration { get; }
@@ -46,7 +41,6 @@ namespace Warden
             services.AddScoped<ProductService>();
 
             services.AddScoped<SaleService>();
-
 
             services.AddScoped<ISessionHelper, Session>();
             services.AddScoped<IEmail, Email>();
