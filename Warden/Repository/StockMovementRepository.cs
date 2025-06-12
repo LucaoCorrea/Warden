@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Warden.Data;
 using Warden.Models;
 
@@ -16,12 +17,19 @@ namespace Warden.Repositories
 
         public IEnumerable<StockMovementModel> GetAll()
         {
-            return _context.stockMovement.ToList();
+            return _context.stockMovement.OrderByDescending(m => m.CreatedAt).ToList();
+        }
+
+        public IEnumerable<StockMovementModel> GetAllWithProduct()
+        {
+            return _context.stockMovement
+                .Include(m => m.Product)
+                .OrderByDescending(m => m.CreatedAt)
+                .ToList();
         }
 
         public void Add(StockMovementModel movement)
         {
-            movement.Date = DateTime.Now;
             _context.stockMovement.Add(movement);
             _context.SaveChanges();
         }

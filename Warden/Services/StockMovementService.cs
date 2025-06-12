@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Warden.Enums;
+﻿using Warden.Enums;
 using Warden.Models;
 using Warden.Repositories;
 
@@ -10,26 +9,38 @@ namespace Warden.Services
         private readonly IStockMovementRepository _movementRepository;
         private readonly IProductRepository _productRepository;
 
-        public StockMovementService(IStockMovementRepository movementRepo, IProductRepository productRepo)
+        public StockMovementService(IStockMovementRepository movementRepository, IProductRepository productRepository)
         {
-            _movementRepository = movementRepo;
-            _productRepository = productRepo;
+            _movementRepository = movementRepository;
+            _productRepository = productRepository;
         }
 
-        public IEnumerable<StockMovementModel> GetAll() => _movementRepository.GetAll();
-
-        public void Add(StockMovementModel movement)
+        public IEnumerable<StockMovementModel> GetAll()
         {
-            var product = _productRepository.GetById(movement.ProductId);
-            if (product == null) return;
+            return _movementRepository.GetAllWithProduct();
+        }
 
-            if (movement.Type == MovementTypeEnum.Entry)
-                product.Stock += movement.Quantity;
-            else if (movement.Type == MovementTypeEnum.Exit)
-                product.Stock -= movement.Quantity;
+        public void Add(StockMovementModel model)
+        {
+            var product = _productRepository.GetById(model.ProductId);
+            if (product == null)
+                throw new Exception("Produto não encontrado.");
 
+            if (model.Type == MovementTypeEnum.Entrada)
+            {
+                product.Stock += model.Quantity;
+            }
+            else if (model.Type == MovementTypeEnum.Saída)
+            {
+                if (product.Stock < model.Quantity)
+                    throw new Exception("Estoque insuficiente para realizar a saída.");
+
+                product.Stock -= model.Quantity;
+            }
+
+            _movementRepository.Add(model);
             _productRepository.Update(product);
-            _movementRepository.Add(movement);
         }
+
     }
 }

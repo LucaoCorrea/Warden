@@ -6,6 +6,7 @@ namespace Warden.Repositories
     public interface IStockMovementRepository
     {
         IEnumerable<StockMovementModel> GetAll();
+        IEnumerable<StockMovementModel> GetAllWithProduct(); 
         void Add(StockMovementModel movement);
     }
 }

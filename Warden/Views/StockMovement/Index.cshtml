@@ -7,28 +7,38 @@
 <h1 class="mb-4">Movimentações de Estoque</h1>
 <a asp-action="Create" class="btn btn-danger mb-3">+ Nova Movimentação</a>
 
+<style>
+    .border-entrada {
+        border-left: 5px solid green;
+    }
+
+    .border-saida {
+        border-left: 5px solid red;
+    }
+</style>
+
 <table class="table table-striped">
     <thead>
         <tr>
             <th>Produto</th>
             <th>Tipo</th>
             <th>Quantidade</th>
-            <th>Motivo</th>
             <th>Data</th>
-            <th>Usuário</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.Product.Name</td>
+            var rowClass = item.Type == Warden.Enums.MovementTypeEnum.Entrada ? "border-entrada" :
+            item.Type == Warden.Enums.MovementTypeEnum.Saída ? "border-saida" : "";
+
+            <tr class="@rowClass">
+                <td>@item.Product?.Name</td>
                 <td>@item.Type</td>
                 <td>@item.Quantity</td>
-                <td>@item.Reason</td>
-                <td>@item.Date.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@item.UserName</td>
+                <td>@item.CreatedAt.ToString("dd/MM/yyyy HH:mm")</td>
             </tr>
         }
+
     </tbody>
 </table>

@@ -5,12 +5,16 @@ namespace Warden.Models
     public class StockMovementModel
     {
         public int Id { get; set; }
+
         public int ProductId { get; set; }
-        public ProductModel Product { get; set; }
-        public MovementTypeEnum Type { get; set; } // Entrada, Saída
+
+        public ProductModel? Product { get; set; } 
+
+        public MovementTypeEnum Type { get; set; }
+
         public int Quantity { get; set; }
-        public string Reason { get; set; }
-        public DateTime Date { get; set; }
-        public string UserName { get; set; }
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
     }
+
 }
