@@ -2,42 +2,56 @@
 @{
     ViewData["Title"] = "Detalhes do Produto";
 }
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<h2 data-aos="fade-down"><i class="lucide lucide-info"></i> Detalhes do Produto</h2>
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="text-info mb-4"><i class="lucide lucide-info"></i> Detalhes do Produto</h2>
 
-<div class="card shadow p-4 rounded-4 " data-aos="fade-up">
-    <div class="row g-3">
-        <div class="col-md-6">
-            <dl class="row">
-                <dt class="col-sm-4">Nome</dt>
-                <dd class="col-sm-8">@Model.Name</dd>
+    <div class="border p-4 rounded shadow-sm bg-light" data-aos="fade-right">
+        <div class="row g-4 align-items-center">
+            <!-- Detalhes do Produto -->
+            <div class="col-md-6">
+                <dl class="row">
+                    <dt class="col-sm-4">🏷️ Nome</dt>
+                    <dd class="col-sm-8">@Model.Name</dd>
 
-                <dt class="col-sm-4">SKU</dt>
-                <dd class="col-sm-8">@Model.SKU</dd>
+                    <dt class="col-sm-4">🔢 SKU</dt>
+                    <dd class="col-sm-8">@Model.SKU</dd>
 
-                <dt class="col-sm-4">Categoria</dt>
-                <dd class="col-sm-8">@Model.Category</dd>
+                    <dt class="col-sm-4">📁 Categoria</dt>
+                    <dd class="col-sm-8">@Model.Category</dd>
 
-                <dt class="col-sm-4">Estoque</dt>
-                <dd class="col-sm-8">@Model.Stock</dd>
+                    <dt class="col-sm-4">📦 Estoque</dt>
+                    <dd class="col-sm-8">@Model.Stock</dd>
 
-                <dt class="col-sm-4">Preço de Custo</dt>
-                <dd class="col-sm-8">R$ @Model.CostPrice.ToString("F2")</dd>
+                    <dt class="col-sm-4">💰 Preço de Custo</dt>
+                    <dd class="col-sm-8">R$ @Model.CostPrice.ToString("F2")</dd>
 
-                <dt class="col-sm-4">Preço de Venda</dt>
-                <dd class="col-sm-8">R$ @Model.SalePrice.ToString("F2")</dd>
+                    <dt class="col-sm-4">💵 Preço de Venda</dt>
+                    <dd class="col-sm-8">R$ @Model.SalePrice.ToString("F2")</dd>
 
-                <dt class="col-sm-4">Unidade</dt>
-                <dd class="col-sm-8">@Model.Unit</dd>
-            </dl>
+                    <dt class="col-sm-4">📏 Unidade</dt>
+                    <dd class="col-sm-8">@Model.Unit</dd>
+                </dl>
+            </div>
+
+            <!-- Imagem do Produto -->
+            <div class="col-md-6 text-center">
+                <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
+            </div>
         </div>
-        <div class="col-md-6">
-            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow" />
-        </div>
-    </div>
 
-    <div class="mt-4 d-flex gap-2">
-        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="lucide lucide-pencil"></i> Editar</a>
-        <a asp-action="Index" class="btn btn-secondary"><i class="lucide lucide-arrow-left"></i> Voltar</a>
+        <!-- Botões -->
+        <div class="mt-4 d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">✏️ Editar</a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+    </script>
+}

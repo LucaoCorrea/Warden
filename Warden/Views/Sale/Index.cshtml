@@ -1,0 +1,52 @@
+﻿@model IEnumerable<Warden.Models.SaleModel>
+
+@{
+    ViewData["Title"] = "Histórico de Vendas";
+
+    var paymentMethodLabels = new Dictionary<string, string>
+    {
+        {"DebitCard", "Cartão de Débito"},
+        {"CreditCard", "Cartão de Crédito"},
+        {"Cash", "Dinheiro"},
+        {"Pix", "PIX"},
+    };
+}
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+<div class="container py-5" data-aos="fade-up">
+    <h2 class="mb-4 text-success">📋 Histórico de Vendas</h2>
+
+    <a asp-action="Create" class="btn btn-outline-primary mb-4">
+        ➕ Nova Venda
+    </a>
+
+    <table class="table table-striped table-hover shadow-sm">
+        <thead class="table-success">
+            <tr>
+                <th>📅 Data</th>
+                <th>👤 Usuário</th>
+                <th>💳 Pagamento</th>
+                <th>📦 Itens</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sale in Model)
+            {
+                var key = sale.PaymentMethod.ToString();
+                var paymentLabel = paymentMethodLabels.ContainsKey(key) ? paymentMethodLabels[key] : key;
+
+                <tr>
+                    <td>@sale.SaleDate.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@sale.UserName</td>
+                    <td>@paymentLabel</td>
+                    <td>@(sale.Items?.Count ?? 0)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({ duration: 600, once: true, easing: 'ease-in-out' });
+</script>

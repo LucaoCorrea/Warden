@@ -17,6 +17,9 @@ namespace Warden.Data
 
         public DbSet<StockMovementModel> stockMovement { get; set; }
 
+        public DbSet<SaleModel> Sales { get; set; }
+        public DbSet<SaleItemModel> SaleItems { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContactMap());

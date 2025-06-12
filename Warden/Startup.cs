@@ -40,9 +40,13 @@ namespace Warden
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IStockMovementRepository, StockMovementRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ISaleRepository, SaleRepository>();
 
             services.AddScoped<StockMovementService>();
             services.AddScoped<ProductService>();
+
+            services.AddScoped<SaleService>();
+
 
             services.AddScoped<ISessionHelper, Session>();
             services.AddScoped<IEmail, Email>();

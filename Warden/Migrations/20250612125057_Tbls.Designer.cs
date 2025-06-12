@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250612115507_Tbls")]
+    [Migration("20250612125057_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />
@@ -105,6 +105,58 @@ namespace Warden.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Warden.Models.SaleItemModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SaleId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("SaleId");
+
+                    b.ToTable("SaleItems");
+                });
+
+            modelBuilder.Entity("Warden.Models.SaleModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SaleDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sales");
+                });
+
             modelBuilder.Entity("Warden.Models.StockMovementModel", b =>
                 {
                     b.Property<int>("Id")
@@ -182,6 +234,25 @@ namespace Warden.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Warden.Models.SaleItemModel", b =>
+                {
+                    b.HasOne("Warden.Models.ProductModel", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Warden.Models.SaleModel", "Sale")
+                        .WithMany("Items")
+                        .HasForeignKey("SaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Sale");
+                });
+
             modelBuilder.Entity("Warden.Models.StockMovementModel", b =>
                 {
                     b.HasOne("Warden.Models.ProductModel", "Product")
@@ -191,6 +262,11 @@ namespace Warden.Migrations
                         .IsRequired();
 
                     b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Warden.Models.SaleModel", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("Warden.Models.UserModel", b =>
