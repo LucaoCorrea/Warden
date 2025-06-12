@@ -42,10 +42,15 @@
                         <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 150px; object-fit: cover;" />
                         <div class="card-body d-flex flex-column justify-content-between">
                             <h6 class="card-title">@product.Name</h6>
+                            <!-- Exibe com vírgula -->
                             <p class="mb-2 text-muted">R$ @product.SalePrice.ToString("F2")</p>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control" min="1" value="1" id="qty-@product.Id" />
-                                <button type="button" class="btn btn-outline-success" onclick="addItem(@product.Id, '@product.Name', @product.SalePrice)">➕</button>
+                                <!-- Envia para JS com ponto decimal -->
+                                <button type="button" class="btn btn-outline-success"
+                                        onclick="addItem(@product.Id, '@product.Name', @product.SalePrice.ToString(System.Globalization.CultureInfo.InvariantCulture))">
+                                    ➕
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -77,6 +82,8 @@
     </form>
 </div>
 
+<!--corrigir erro na nota fiscal-->
+
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
     <script>
@@ -90,14 +97,18 @@
 
             if (!quantity || quantity <= 0) return;
 
-            const total = (quantity * price).toFixed(2);
+            // Garante que price é número decimal
+            const unitPrice = parseFloat(price);
+            if (isNaN(unitPrice)) return;
+
+            const total = (quantity * unitPrice).toFixed(2);
             const tbody = document.getElementById("itemsTableBody");
 
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${productName}</td>
                 <td>${quantity}</td>
-                <td>R$ ${price.toFixed(2)}</td>
+                <td>R$ ${unitPrice.toFixed(2)}</td>
                 <td>R$ ${total}</td>
                 <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remover</button></td>
             `;
@@ -106,7 +117,7 @@
             document.getElementById("hiddenItems").innerHTML += `
                 <input type="hidden" name="Items[${itemIndex}].ProductId" value="${productId}" />
                 <input type="hidden" name="Items[${itemIndex}].Quantity" value="${quantity}" />
-                <input type="hidden" name="Items[${itemIndex}].UnitPrice" value="${price}" />
+                <input type="hidden" name="Items[${itemIndex}].UnitPrice" value="${unitPrice}" />
             `;
 
             itemIndex++;

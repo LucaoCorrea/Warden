@@ -6,6 +6,9 @@ using Warden.Models;
 using Warden.Services;
 using Warden.Repositories;
 using ClosedXML.Excel;
+using System;
+using System.IO;
+using System.Linq;
 
 namespace Warden.Controllers
 {
@@ -13,11 +16,13 @@ namespace Warden.Controllers
     {
         private readonly SaleService _saleService;
         private readonly IProductRepository _productRepo;
+        private readonly CashRegisterService _cashService;
 
-        public SaleController(SaleService saleService, IProductRepository productRepo)
+        public SaleController(SaleService saleService, IProductRepository productRepo, CashRegisterService cashService)
         {
             _saleService = saleService;
             _productRepo = productRepo;
+            _cashService = cashService;
         }
 
         public IActionResult Index()
@@ -28,6 +33,13 @@ namespace Warden.Controllers
 
         public IActionResult Create()
         {
+            var caixaAberto = _cashService.GetOpenRegister();
+            if (caixaAberto == null)
+            {
+                TempData["Error"] = "Você precisa abrir o caixa antes de iniciar uma venda.";
+                return RedirectToAction("Index", "CashRegister");
+            }
+
             var products = _productRepo.GetAll();
             ViewBag.Products = products;
             return View();
@@ -36,6 +48,13 @@ namespace Warden.Controllers
         [HttpPost]
         public IActionResult Create(SaleModel sale)
         {
+            var caixaAberto = _cashService.GetOpenRegister();
+            if (caixaAberto == null)
+            {
+                TempData["Error"] = "Você precisa abrir o caixa antes de concluir uma venda.";
+                return RedirectToAction("Index", "CashRegister");
+            }
+
             if (!ModelState.IsValid || sale.Items == null || !sale.Items.Any())
             {
                 ViewBag.Products = _productRepo.GetAll();
@@ -73,8 +92,6 @@ namespace Warden.Controllers
             return File(pdfBytes, "application/pdf", $"NotaFiscal_Venda_{id}.pdf");
         }
 
-
-        // gerar nota fiscal em PDF
         private byte[] GeneratePdfReceipt(SaleModel sale)
         {
             var logoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", "logo.png");
@@ -93,22 +110,21 @@ namespace Warden.Controllers
                         .Row(row =>
                         {
                             row.RelativeColumn()
-                            .AlignMiddle()
-                            .Image(logoPath, ImageScaling.FitHeight);
+                                .AlignMiddle()
+                                .Image(logoPath, ImageScaling.FitHeight);
 
                             row.RelativeColumn()
-                               .AlignMiddle()
-                               .Text("Warden - Sistema de Estoque")
-                               .FontColor(Colors.Red.Darken1);
-
+                                .AlignMiddle()
+                                .Text("Warden - Sistema de Estoque")
+                                .FontColor(Colors.Red.Darken1);
 
                             row.ConstantColumn(250)
-                               .AlignMiddle()
-                               .Text("NOTA FISCAL (FALSA)")
-                               .SemiBold()
-                               .FontSize(20)
-                               .FontColor(Colors.Green.Darken2)
-                               .AlignRight();
+                                .AlignMiddle()
+                                .Text("NOTA FISCAL (FALSA)")
+                                .SemiBold()
+                                .FontSize(20)
+                                .FontColor(Colors.Green.Darken2)
+                                .AlignRight();
                         });
 
                     page.Content()
@@ -180,14 +196,11 @@ namespace Warden.Controllers
             return ms.ToArray();
         }
 
-        // exportar vendas para Excel
         [HttpPost]
         public IActionResult Export(DateTime startDate, DateTime endDate)
         {
-            // Ajusta o horário para o fim do dia final (para incluir vendas daquele dia)
             endDate = endDate.Date.AddDays(1).AddTicks(-1);
 
-            // Busca as vendas no intervalo
             var sales = _saleService.GetAll()
                         .Where(s => s.SaleDate >= startDate && s.SaleDate <= endDate)
                         .ToList();

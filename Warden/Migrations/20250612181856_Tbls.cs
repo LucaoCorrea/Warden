@@ -12,6 +12,25 @@ namespace Warden.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "CashRegisters",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OpenedBy = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OpenedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    InitialAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ClosedBy = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ClosedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    FinalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: true),
+                    Difference = table.Column<decimal>(type: "decimal(18,2)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashRegisters", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -65,6 +84,29 @@ namespace Warden.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CashMovements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CashRegisterId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Value = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CashMovements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_CashMovements_CashRegisters_CashRegisterId",
+                        column: x => x.CashRegisterId,
+                        principalTable: "CashRegisters",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,6 +182,11 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_CashMovements_CashRegisterId",
+                table: "CashMovements",
+                column: "CashRegisterId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Contacts_UserId",
                 table: "Contacts",
                 column: "UserId");
@@ -164,6 +211,9 @@ namespace Warden.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "CashMovements");
+
+            migrationBuilder.DropTable(
                 name: "Contacts");
 
             migrationBuilder.DropTable(
@@ -171,6 +221,9 @@ namespace Warden.Migrations
 
             migrationBuilder.DropTable(
                 name: "stockMovement");
+
+            migrationBuilder.DropTable(
+                name: "CashRegisters");
 
             migrationBuilder.DropTable(
                 name: "Users");

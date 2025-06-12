@@ -20,6 +20,8 @@ namespace Warden.Data
         public DbSet<SaleModel> Sales { get; set; }
         public DbSet<SaleItemModel> SaleItems { get; set; }
 
+        public DbSet<CashRegisterModel> CashRegisters { get; set; }
+        public DbSet<CashMovementModel> CashMovements { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContactMap());

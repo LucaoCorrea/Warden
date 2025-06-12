@@ -42,6 +42,9 @@ namespace Warden
 
             services.AddScoped<SaleService>();
 
+            services.AddScoped<ICashRegisterRepository, CashRegisterRepository>();
+            services.AddScoped<CashRegisterService>();
+
             services.AddScoped<ISessionHelper, Session>();
             services.AddScoped<IEmail, Email>();
 
