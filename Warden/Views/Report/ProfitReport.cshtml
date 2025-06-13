@@ -1,0 +1,42 @@
+﻿@model Warden.Models.ViewModels.ProfitReportViewModel
+
+@{
+    ViewData["Title"] = "Relatório de Lucro";
+}
+
+<h2>💰 Relatório de Lucro</h2>
+
+<form method="get" class="mb-4 row g-3 align-items-end">
+    <div class="col-md-3">
+        <label>Data Inicial</label>
+        <input type="date" name="StartDate" value="@Model.Filters.StartDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <label>Data Final</label>
+        <input type="date" name="EndDate" value="@Model.Filters.EndDate?.ToString("yyyy-MM-dd")" class="form-control" />
+    </div>
+    <div class="col-md-12 text-end mt-2">
+        <button type="submit" class="btn btn-primary">Calcular</button>
+    </div>
+</form>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card border-success p-3">
+            <h5>Total de Vendas</h5>
+            <p class="fs-4">R$ @Model.TotalSales.ToString("F2")</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-warning p-3">
+            <h5>Total de Custo</h5>
+            <p class="fs-4">R$ @Model.TotalCost.ToString("F2")</p>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-danger p-3">
+            <h5>Lucro Total</h5>
+            <p class="fs-4">R$ @Model.TotalProfit.ToString("F2")</p>
+        </div>
+    </div>
+</div>

@@ -16,10 +16,6 @@
                 <li class="nav-item">
                     <a class="nav-link text-danger" asp-controller="Home" asp-action="Index">🏠 Página Inicial</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-primary" asp-controller="Dashboard" asp-action="Index">📈 Dashboard</a>
-                </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-success" href="#" id="vendasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         🛒 Vendas
@@ -29,7 +25,6 @@
                         <li><a class="dropdown-item" asp-controller="CashRegister" asp-action="Index">💰 Caixa</a></li>
                     </ul>
                 </li>
-
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-danger" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         🧾 Administração
@@ -50,6 +45,15 @@
                     <ul class="dropdown-menu" aria-labelledby="estoqueDropdown">
                         <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">📦 Produtos</a></li>
                         <li><a class="dropdown-item" asp-controller="StockMovement" asp-action="Index">📊 Movimentações</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-info" href="#" id="relatoriosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        📊 Relatórios
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="relatoriosDropdown">
+                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">📈 Dashboard</a></li>
+                        <li><a class="dropdown-item" asp-controller="Report" asp-action="SalesReport">🔍 Relatório de Vendas</a></li>
                     </ul>
                 </li>
 
