@@ -1,0 +1,270 @@
+﻿@model Warden.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<h2 class="mb-4 text-center">📊 Painel de Controle - Dashboard</h2>
+
+<div class="row g-4 mb-4">
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6>Total de Vendas</h6>
+                <h3>@Model.TotalSalesCount</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6>Faturamento Total</h6>
+                <h3>@Model.TotalSalesAmount.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <h6>Ticket Médio</h6>
+                <h3>@Model.AverageTicket.ToString("C")</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+
+    <div class="col-lg-6 col-md-12">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">🔥 Produtos Mais Vendidos</h5>
+            <canvas id="topProductsChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">⏰ Horários com Mais Vendas</h5>
+            <canvas id="salesByHourChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">💳 Vendas por Forma de Pagamento</h5>
+            <canvas id="paymentMethodChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">📂 Vendas por Categoria</h5>
+            <canvas id="salesByCategoryChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">👥 Top Usuários por Vendas</h5>
+            <canvas id="topUsersChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">📅 Ticket Médio por Dia da Semana</h5>
+            <canvas id="salesByWeekdayChart" height="300"></canvas>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">📉 Produtos com Estoque Baixo (&lt; 10)</h5>
+            <ul class="list-group">
+                @foreach (var p in Model.LowStockProducts)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @p.ProductName
+                        <span class="badge bg-danger rounded-pill">@p.Stock</span>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-6 col-md-12 mt-4">
+        <div class="card shadow-sm p-3">
+            <h5 class="mb-3">💳 Ticket Médio por Forma de Pagamento</h5>
+            <canvas id="avgTicketPaymentMethodChart" height="300"></canvas>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Produtos mais vendidos - Pizza
+        const productLabels = @Html.Raw(Json.Serialize(Model.TopProducts.Select(p => p.ProductName)));
+        const productData = @Html.Raw(Json.Serialize(Model.TopProducts.Select(p => p.QuantitySold)));
+
+        new Chart(document.getElementById('topProductsChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: productLabels,
+                datasets: [{
+                    data: productData,
+                    backgroundColor: ['#f94144', '#f3722c', '#f8961e', '#f9844a', '#f9c74f'],
+                    borderWidth: 1
+                }]
+            }
+        });
+
+        // Vendas por hora - Barra
+        const hourLabels = @Html.Raw(Json.Serialize(Model.SalesByHour.Select(h => h.Hour + ":00")));
+        const hourData = @Html.Raw(Json.Serialize(Model.SalesByHour.Select(h => h.TotalSales)));
+
+        new Chart(document.getElementById('salesByHourChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: hourLabels,
+                datasets: [{
+                    label: 'Quantidade de Vendas',
+                    data: hourData,
+                    backgroundColor: '#43aa8b'
+                }]
+            },
+            options: {
+                scales: { y: { beginAtZero: true, precision: 0 } }
+            }
+        });
+
+        // Vendas por forma de pagamento - Doughnut
+        const paymentLabels = @Html.Raw(Json.Serialize(Model.SalesByPaymentMethod.Select(p => p.PaymentMethod)));
+        const paymentData = @Html.Raw(Json.Serialize(Model.SalesByPaymentMethod.Select(p => p.TotalAmount)));
+
+        new Chart(document.getElementById('paymentMethodChart').getContext('2d'), {
+            type: 'doughnut',
+            data: {
+                labels: paymentLabels,
+                datasets: [{
+                    data: paymentData,
+                    backgroundColor: ['#577590', '#f3722c', '#43aa8b', '#f94144', '#f9c74f'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.label + ': ' + ctx.parsed.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                    }
+                }
+            }
+        });
+
+        // Vendas por categoria - Barra horizontal
+        const categoryLabels = @Html.Raw(Json.Serialize(Model.SalesByCategory.Select(c => c.Category)));
+        const categoryData = @Html.Raw(Json.Serialize(Model.SalesByCategory.Select(c => c.QuantitySold)));
+
+        new Chart(document.getElementById('salesByCategoryChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: categoryLabels,
+                datasets: [{
+                    label: 'Quantidade Vendida',
+                    data: categoryData,
+                    backgroundColor: '#ffb703'
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                scales: { x: { beginAtZero: true, precision: 0 } }
+            }
+        });
+
+        // Top usuários por vendas - Barra
+        const userLabels = @Html.Raw(Json.Serialize(Model.TopUsers.Select(u => u.UserName)));
+        const userData = @Html.Raw(Json.Serialize(Model.TopUsers.Select(u => u.TotalSalesAmount)));
+
+        new Chart(document.getElementById('topUsersChart').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: userLabels,
+                datasets: [{
+                    label: 'Total Vendido',
+                    data: userData,
+                    backgroundColor: '#06d6a0'
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: val => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                    }
+                }
+            }
+        });
+
+        // Ticket médio por dia da semana - linha
+        const weekdayLabels = @Html.Raw(Json.Serialize(Model.SalesByWeekday.Select(w => w.Weekday)));
+        const weekdayData = @Html.Raw(Json.Serialize(Model.SalesByWeekday.Select(w => w.AverageSales)));
+
+        new Chart(document.getElementById('salesByWeekdayChart').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: weekdayLabels,
+                datasets: [{
+                    label: 'Ticket Médio',
+                    data: weekdayData,
+                    backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                    borderColor: '#e63946',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: val => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                    }
+                }
+            }
+        });
+
+        // Ticket médio por forma de pagamento - pizza
+        const avgPaymentLabels = @Html.Raw(Json.Serialize(Model.AvgTicketByPaymentMethod.Select(p => p.PaymentMethod)));
+        const avgPaymentData = @Html.Raw(Json.Serialize(Model.AvgTicketByPaymentMethod.Select(p => p.AverageTicket)));
+
+        new Chart(document.getElementById('avgTicketPaymentMethodChart').getContext('2d'), {
+            type: 'pie',
+            data: {
+                labels: avgPaymentLabels,
+                datasets: [{
+                    data: avgPaymentData,
+                    backgroundColor: ['#ef476f', '#ffd166', '#06d6a0', '#118ab2', '#073b4c'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: ctx => ctx.label + ': ' + ctx.parsed.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
