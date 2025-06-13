@@ -12,52 +12,55 @@
 
         <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
             <ul class="navbar-nav me-3 gap-2">
+
                 <li class="nav-item">
                     <a class="nav-link text-danger" asp-controller="Home" asp-action="Index">🏠 Página Inicial</a>
                 </li>
-                         
-                <li class="nav-item">
-                    <a class="nav-link text-success" asp-controller="Sale" asp-action="Index">🛒 PDV</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-success" href="#" id="vendasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🛒 Vendas
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="vendasDropdown">
+                        <li><a class="dropdown-item" asp-controller="Sale" asp-action="Index">🛒 PDV</a></li>
+                        <li><a class="dropdown-item" asp-controller="CashRegister" asp-action="Index">💰 Caixa</a></li>
+                    </ul>
                 </li>
-                <li>
-                    <a class="nav-link text-dark" asp-controller="CashRegister" asp-action="Index">💰 Caixa</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-danger" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        🧾 Administração
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="adminDropdown">
+                        <li><a class="dropdown-item" asp-controller="Contact" asp-action="Index">📞 Fornecedores</a></li>
+                        @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
+                        {
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Index">👤 Usuários</a></li>
+                        }
+                    </ul>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-danger" asp-controller="Contact" asp-action="Index">📞 Fornecedores</a>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        📦 Estoque
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="estoqueDropdown">
+                        <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">📦 Produtos</a></li>
+                        <li><a class="dropdown-item" asp-controller="StockMovement" asp-action="Index">📊 Movimentações</a></li>
+                    </ul>
                 </li>
-                @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
-                {
-                    <li class="nav-item">
-                        <a class="nav-link text-danger" asp-controller="User" asp-action="Index">👤 Usuários</a>
-                    </li>
-                }
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-dark" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        ⚙️ Menu
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuDropdown">
+                        <li><a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a></li>
+                        <li><a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a></li>
+                    </ul>
+                </li>
+
             </ul>
-            <div class="dropdown">
-                <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    📦 Estoque
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                    <li>
-                        <a class="nav-link text-dark" asp-controller="Product" asp-action="Index">📦 Produtos</a>
-                    </li>
-                    <li>
-                        <a class="nav-link text-dark" asp-controller="StockMovement" asp-action="Index">📊 Movimentações</a>
-                    </li>
-                </ul>
-            </div>
-            <div class="dropdown">
-                <button class="btn btn-outline-dark dropdown-toggle" type="button" id="userMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                    ⚙️ Menu
-                </button>
-                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userMenuButton">
-                    <li>
-                        <a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </div>
 </nav>

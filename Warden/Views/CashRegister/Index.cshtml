@@ -2,44 +2,68 @@
 
 @{
     ViewData["Title"] = "Caixa";
+    // eu reconheço a falha de segurança aqui, mas é um projeto de exemplo e não deve ser usado em produção.
     bool isOpen = Model != null && Model.ClosedAt == null;
 }
 
 <div class="container py-5">
     <h2 class="mb-4 text-success">💰 Controle de Caixa</h2>
 
+    @if (!string.IsNullOrEmpty(ViewBag.Error as string))
+    {
+        <div class="alert alert-danger">@ViewBag.Error</div>
+    }
+
     @if (!isOpen)
     {
         <form asp-action="Open" method="post">
-         <div class="alert alert-secondary">
-             O caixa será aberto automaticamente com o valor final do último fechamento.
+            <div class="alert alert-secondary">
+                O caixa será aberto automaticamente com o valor final do último fechamento.
             </div>
-            <button type="submit" class="btn btn-success">Abrir Caixa</button>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-success">Abrir Caixa</button>
+                <a asp-action="History" class="btn btn-outline-secondary">📜 Histórico</a>
+            </div>
         </form>
-}
+    }
     else
     {
         <div class="alert alert-info">
-            Caixa aberto desde: <strong>@Model.OpenedAt.ToString("dd/MM/yyyy HH:mm")</strong><br />
-            Valor Inicial: <strong>R$ @Model.InitialAmount</strong>
+            Caixa aberto desde: <strong id="openedAt">@Model.OpenedAt.ToString("dd/MM/yyyy HH:mm")</strong><br />
+            Valor Inicial: <strong id="initialAmount">R$ @Model.InitialAmount.ToString("F2")</strong>
         </div>
 
-        <form asp-action="Close" method="post">
-            <div class="mb-3">
-                <label class="form-label">Valor Final em Caixa</label>
-                <input type="number"
-                       step="0.01"
-                       name="finalAmount"
-                       class="form-control"
-                       required
-                       value="@Model.InitialAmount.ToString("F2").Replace(",", ".")"
-                 readonly />
-                 
-                <input type="hidden"
-                        name="finalAmount"
-                        value="@Model.InitialAmount.ToString("F2").Replace(",", ".")" />
-             </div>
+        <form asp-action="Close" method="post" class="mb-3">
+            <input type="hidden" name="finalAmount" id="finalAmountInput" value="@Model.InitialAmount.ToString("F2").Replace(",", ".")" />
             <button type="submit" class="btn btn-danger">Fechar Caixa</button>
         </form>
+
+        <div class="d-flex gap-2">
+            <a asp-action="Withdraw" class="btn btn-warning">💸 Retirar Dinheiro</a>
+            <a asp-action="History" class="btn btn-outline-secondary">📜 Histórico</a>
+        </div>
     }
 </div>
+
+@if (isOpen)
+{
+    <script>
+        function refreshCashInfo() {
+            fetch('@Url.Action("GetCurrent", "CashRegister")')
+                .then(response => {
+                    if (!response.ok) throw new Error("Erro ao buscar dados.");
+                    return response.json();
+                })
+                .then(data => {
+                    document.getElementById("openedAt").textContent = data.openedAt;
+                    document.getElementById("initialAmount").textContent = "R$ " + data.initialAmount;
+                    document.getElementById("finalAmountInput").value = data.initialAmount.replace(",", ".");
+                })
+                .catch(() => {
+                    location.reload();
+                });
+        }
+
+        setInterval(refreshCashInfo, 10);
+    </script>
+}

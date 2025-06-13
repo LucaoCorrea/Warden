@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Warden.Models.CashRegisterModel>
+
+@{
+    ViewData["Title"] = "Histórico de Caixas";
+}
+
+<div class="container py-5">
+    <h2 class="text-secondary mb-4">📜 Histórico de Caixas</h2>
+    <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#exportModal">
+        📤 Exportar
+    </button>
+
+    <table class="table table-striped table-hover" id="table-contacts">
+        <thead class="table-secondary">
+            <tr>
+                <th>📅 Abertura</th>
+                <th>⏰ Fechamento</th>
+                <th>💰 Valor Inicial</th>
+                <th>💸 Valor Final</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var caixa in Model)
+            {
+                <tr>
+                    <td>@caixa.OpenedAt.ToString("dd/MM/yyyy HH:mm")</td>
+                    <td>@(caixa.ClosedAt?.ToString("dd/MM/yyyy HH:mm") ?? "Aberto")</td>
+                    <td>R$ @caixa.InitialAmount.ToString("F2")</td>
+                    <td>R$ @(caixa.FinalAmount?.ToString("F2") ?? "-")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <a asp-action="Index" class="btn btn-secondary mt-3">Voltar</a>
+
+    <div class="modal " id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form asp-action="Export" method="post" id="exportForm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exportModalLabel">Filtrar e Exportar</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="startDate" class="form-label">Data Inicial</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="endDate" class="form-label">Data Final</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Gerar Excel</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
