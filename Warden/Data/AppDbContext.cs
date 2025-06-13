@@ -22,6 +22,9 @@ namespace Warden.Data
 
         public DbSet<CashRegisterModel> CashRegisters { get; set; }
         public DbSet<CashMovementModel> CashMovements { get; set; }
+
+        public DbSet<LoyalCustomerModel> LoyalCustomers { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContactMap());

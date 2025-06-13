@@ -1,0 +1,101 @@
+﻿@model Warden.Models.LoyalCustomerModel
+
+@{
+    ViewData["Title"] = "Cadastrar Cliente Fidelizado";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Create" method="post" class="mt-3" onsubmit="return validateForm()">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="Name"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CEP"></label>
+        <input asp-for="CEP" class="form-control" id="cepInput" />
+        <span class="text-danger" id="cepError"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Age"></label>
+        <input asp-for="Age" class="form-control" id="ageInput" type="number" />
+        <span class="text-danger" id="ageError"></span>
+    </div>
+
+    <!-- Campo auto preenchido para demonstração -->
+    <div class="form-group">
+        <label>Endereço (auto)</label>
+        <input type="text" id="addressField" class="form-control" readonly />
+    </div>
+
+    <button type="submit" class="btn btn-success mt-3">Salvar</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#cepInput').mask('00000-000');
+
+            $('#cepInput').on('blur', function () {
+                const cep = $(this).val().replace('-', '');
+
+                if (cep.length === 8) {
+                    fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (!data.erro) {
+                                const endereco = `${data.logradouro}, ${data.bairro}, ${data.localidade} - ${data.uf}`;
+                                $('#addressField').val(endereco);
+                                $('#cepError').text('');
+                            } else {
+                                $('#cepError').text('CEP não encontrado.');
+                                $('#addressField').val('');
+                            }
+                        })
+                        .catch(() => {
+                            $('#cepError').text('Erro ao buscar o endereço.');
+                        });
+                } else {
+                    $('#cepError').text('CEP deve ter 8 dígitos.');
+                }
+            });
+        });
+
+        function validateForm() {
+            const cep = $('#cepInput').val();
+            const age = parseInt($('#ageInput').val());
+            let isValid = true;
+
+            const cepPattern = /^\d{5}-\d{3}$/;
+            if (!cepPattern.test(cep)) {
+                $('#cepError').text('CEP inválido. Use o formato 00000-000.');
+                isValid = false;
+            } else {
+                $('#cepError').text('');
+            }
+
+            if (isNaN(age) || age < 17 || age > 119) {
+                $('#ageError').text('Idade deve estar entre 17 e 119 anos.');
+                isValid = false;
+            } else {
+                $('#ageError').text('');
+            }
+
+            return isValid;
+        }
+    </script>
+}

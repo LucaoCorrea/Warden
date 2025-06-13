@@ -1,0 +1,44 @@
+﻿@model List<Warden.Models.LoyalCustomerModel>
+@{
+    ViewData["Title"] = "Clientes Warden Lovers";
+}
+
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary">❤️ Clientes Warden Lovers</h2>
+        <div>
+            <a asp-action="Create" class="btn btn-success me-2">➕ Novo Cliente</a>
+            <form asp-action="Export" method="post" class="d-inline">
+                <button type="submit" class="btn btn-outline-primary">📤 Exportar Excel</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0" id="table-contacts">
+                <thead class="table-light">
+                    <tr>
+                        <th>👤 Nome</th>
+                        <th>📧 Email</th>
+                        <th>📍 CEP</th>
+                        <th>🎂 Idade</th>
+                        <th>💰 Cashback (R$)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.Name</td>
+                            <td>@c.Email</td>
+                            <td>@c.CEP</td>
+                            <td>@c.Age</td>
+                            <td>@c.CashbackBalance.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
