@@ -43,6 +43,8 @@ namespace Warden.Services
                 if (product == null || product.Stock < item.Quantity)
                     throw new Exception($"Produto {item.ProductId} sem estoque suficiente.");
 
+                item.UnitPrice = product.SalePrice;
+
                 product.Stock -= item.Quantity;
                 _productRepo.Update(product);
 

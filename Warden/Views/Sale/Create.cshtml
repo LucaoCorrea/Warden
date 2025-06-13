@@ -42,11 +42,9 @@
                         <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 150px; object-fit: cover;" />
                         <div class="card-body d-flex flex-column justify-content-between">
                             <h6 class="card-title">@product.Name</h6>
-                            <!-- Exibe com vírgula -->
                             <p class="mb-2 text-muted">R$ @product.SalePrice.ToString("F2")</p>
                             <div class="input-group input-group-sm">
                                 <input type="number" class="form-control" min="1" value="1" id="qty-@product.Id" />
-                                <!-- Envia para JS com ponto decimal -->
                                 <button type="button" class="btn btn-outline-success"
                                         onclick="addItem(@product.Id, '@product.Name', @product.SalePrice.ToString(System.Globalization.CultureInfo.InvariantCulture))">
                                     ➕
