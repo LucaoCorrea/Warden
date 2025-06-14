@@ -35,13 +35,25 @@ namespace Warden.Services
                 .FirstOrDefault(s => s.Id == id);
         }
 
+        public List<LoyalCustomerModel> GetAllLoyalCustomers()
+        {
+            return _context.LoyalCustomers
+                           .OrderBy(c => c.Name)
+                           .ToList();
+        }
+
         public int ProcessSale(SaleModel sale)
         {
+            sale.SaleDate = DateTime.Now;
+
             foreach (var item in sale.Items)
             {
                 var product = _productRepo.GetById(item.ProductId);
-                if (product == null || product.Stock < item.Quantity)
-                    throw new Exception($"Produto {item.ProductId} sem estoque suficiente.");
+                if (product == null)
+                    throw new Exception($"Produto {item.ProductId} não encontrado.");
+
+                if (product.Stock < item.Quantity)
+                    throw new Exception($"Produto {product.Name} sem estoque suficiente.");
 
                 item.UnitPrice = product.SalePrice;
 
@@ -57,8 +69,11 @@ namespace Warden.Services
                 });
             }
 
+            sale.TotalAmount = sale.Items.Sum(i => i.Quantity * i.UnitPrice);
+
             _saleRepo.Add(sale);
             return sale.Id;
         }
+
     }
 }
