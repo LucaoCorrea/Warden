@@ -12,6 +12,11 @@ Este projeto foi idealizado para empresas que desejam uma gestão eficiente dos 
 
 ----------
 
+![repo size](https://img.shields.io/github/repo-size/LucaoCorrea/Warden?color=blue&label=repo%20size)
+![last commit](https://img.shields.io/github/last-commit/LucaoCorrea/Warden?color=olive&label=last%20commit)
+
+---------
+
 ## 🚀 Como rodar
 
 Para saber como rodar o projeto, acesse o guia completo:
