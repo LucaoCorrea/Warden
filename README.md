@@ -16,7 +16,7 @@ Este projeto foi idealizado para empresas que desejam uma gestão eficiente dos 
 
 Para saber como rodar o projeto, acesse o guia completo:
 
-👉 [Clique aqui para acessar o Ready.md](./Ready.md)
+👉 [Clique aqui para acessar o READY.md](https://github.com/LucaoCorrea/Warden/blob/main/READY.md)
 
 ----------
 
@@ -118,7 +118,7 @@ O **Warden Lovers** é o sistema interno de **clientes fidelizados**. Ele permit
 
 Consulte a documentação completa das rotas da API:
 
-👉 Clique aqui para acessar API.md
+👉 [Clique aqui para acessar o API.md](https://github.com/LucaoCorrea/Warden/blob/main/API.md)
 
 ----------
 
