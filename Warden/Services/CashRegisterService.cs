@@ -59,7 +59,7 @@ namespace Warden.Services
 
             var openedAt = open.OpenedAt;
 
-            decimal stockMovementsTotal = _context.stockMovement
+            decimal stockMovementsTotal = _context.StockMovement
                 .Where(m => m.CreatedAt >= openedAt)
                 .Sum(m => m.TotalValue);
 

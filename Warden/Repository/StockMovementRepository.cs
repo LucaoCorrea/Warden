@@ -17,12 +17,12 @@ namespace Warden.Repositories
 
         public IEnumerable<StockMovementModel> GetAll()
         {
-            return _context.stockMovement.OrderByDescending(m => m.CreatedAt).ToList();
+            return _context.StockMovement.OrderByDescending(m => m.CreatedAt).ToList();
         }
 
         public IEnumerable<StockMovementModel> GetAllWithProduct()
         {
-            return _context.stockMovement
+            return _context.StockMovement
                 .Include(m => m.Product)
                 .OrderByDescending(m => m.CreatedAt)
                 .ToList();
@@ -30,7 +30,7 @@ namespace Warden.Repositories
 
         public void Add(StockMovementModel movement)
         {
-            _context.stockMovement.Add(movement);
+            _context.StockMovement.Add(movement);
             _context.SaveChanges();
         }
     }

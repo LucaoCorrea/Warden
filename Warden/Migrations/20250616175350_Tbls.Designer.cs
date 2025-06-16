@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250614203627_Tbls")]
+    [Migration("20250616175350_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />
@@ -206,6 +206,34 @@ namespace Warden.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("Warden.Models.ReleaseNoteModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ReleaseDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Version")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReleaseNotes");
+                });
+
             modelBuilder.Entity("Warden.Models.SaleItemModel", b =>
                 {
                     b.Property<int>("Id")
@@ -288,7 +316,7 @@ namespace Warden.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("stockMovement");
+                    b.ToTable("StockMovement");
                 });
 
             modelBuilder.Entity("Warden.Models.UserModel", b =>
@@ -327,6 +355,29 @@ namespace Warden.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Warden.Models.UserReleaseViewModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ReleaseNoteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ViewedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserReleaseViews");
                 });
 
             modelBuilder.Entity("Warden.Models.CashMovementModel", b =>

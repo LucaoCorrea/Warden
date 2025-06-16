@@ -71,6 +71,22 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ReleaseNotes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Version = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ReleaseNotes", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Sales",
                 columns: table => new
                 {
@@ -84,6 +100,21 @@ namespace Warden.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Sales", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserReleaseViews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ReleaseNoteId = table.Column<int>(type: "int", nullable: false),
+                    ViewedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserReleaseViews", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -129,7 +160,7 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "stockMovement",
+                name: "StockMovement",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -142,9 +173,9 @@ namespace Warden.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_stockMovement", x => x.Id);
+                    table.PrimaryKey("PK_StockMovement", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_stockMovement_Products_ProductId",
+                        name: "FK_StockMovement_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -221,8 +252,8 @@ namespace Warden.Migrations
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_stockMovement_ProductId",
-                table: "stockMovement",
+                name: "IX_StockMovement_ProductId",
+                table: "StockMovement",
                 column: "ProductId");
         }
 
@@ -239,10 +270,16 @@ namespace Warden.Migrations
                 name: "LoyalCustomers");
 
             migrationBuilder.DropTable(
+                name: "ReleaseNotes");
+
+            migrationBuilder.DropTable(
                 name: "SaleItems");
 
             migrationBuilder.DropTable(
-                name: "stockMovement");
+                name: "StockMovement");
+
+            migrationBuilder.DropTable(
+                name: "UserReleaseViews");
 
             migrationBuilder.DropTable(
                 name: "CashRegisters");

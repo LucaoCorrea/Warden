@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
 using Warden.Data;
 using Warden.Models.ViewModels;
-using System;
 
 namespace Warden.Controllers
 {

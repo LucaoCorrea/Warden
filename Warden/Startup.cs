@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using QuestPDF;
 using QuestPDF.Infrastructure;
 using Warden.Data;
 using Warden.Enums;
@@ -39,11 +38,14 @@ namespace Warden
 
             services.AddScoped<StockMovementService>();
             services.AddScoped<ProductService>();
-
             services.AddScoped<SaleService>();
 
             services.AddScoped<ICashRegisterRepository, CashRegisterRepository>();
             services.AddScoped<CashRegisterService>();
+
+            services.AddScoped<IReleaseNoteRepository, ReleaseNoteRepository>();
+            services.AddScoped<IUserReleaseViewRepository, UserReleaseViewRepository>();
+
 
             services.AddScoped<ISessionHelper, Session>();
             services.AddScoped<IEmail, Email>();
@@ -87,6 +89,7 @@ namespace Warden
                 CreateDefaultUser(context);
                 CreateDefaultContact(context);
                 CreateDefaultProduct(context);
+                CreateDefaultReleaseNote(context);
             }
         }
 
@@ -147,6 +150,29 @@ namespace Warden
                 };
 
                 context.Products.Add(produto);
+                context.SaveChanges();
+            }
+        }
+
+        private void CreateDefaultReleaseNote(AppDbContext context)
+        {
+            if (!context.ReleaseNotes.Any(r => r.Version == "BETA - 1.1.2.25"))
+            {
+                var release = new ReleaseNoteModel
+                {
+                    Title = "Nota de Atualização",
+                    Version = "BETA-1.2.25",
+                    Description = @"
+- Novo sistema de vendas com integração ao estoque
+- Módulo de Caixa completo com abertura, fechamento e histórico
+- Sistema Warden Lovers de fidelização com cashback (em desenvolvimento)
+- Exportação de relatórios para Excel
+- Geração de notas fiscais simuladas em PDF
+",
+                    ReleaseDate = DateTime.Now
+                };
+
+                context.ReleaseNotes.Add(release);
                 context.SaveChanges();
             }
         }

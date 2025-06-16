@@ -3,6 +3,30 @@
 }
 <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
+
+@if (ViewBag.ShowReleaseNotes == true)
+{
+    var note = (ReleaseNoteModel)ViewBag.ReleaseNote;
+    <div class="modal fade" id="releaseNotesModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🚀 O que há de novo - Versão @note.Version</h5>
+                </div>
+                <div class="modal-body">
+                    <h6>@note.Title</h6>
+                    <p>@Html.Raw(note.Description.Replace("\n", "<br/>"))</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
 <div id="carouselExampleIndicators" class="carousel slide mb-3 rounded-0" data-bs-ride="carousel">
     <div class="carousel-indicators">
         <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
@@ -166,6 +190,10 @@
         once: true,
         easing: 'ease-in-out'
     });
+    window.onload = function () {
+        var releaseModal = new bootstrap.Modal(document.getElementById('releaseNotesModal'));
+        releaseModal.show();
+    };
 </script>
 
 <style>
