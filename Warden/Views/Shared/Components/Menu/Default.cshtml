@@ -1,82 +1,82 @@
 ﻿@model UserModel
 
-<nav>
+<nav class="navbar navbar-expand-lg navbar-light bg-light border-0">
     <div class="container-fluid d-flex justify-content-between align-items-center">
-        <a class="navbar-brand text-danger fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
-            Olá, @Model.Name
-        </a>
+        <div class="navbar-text fw-bold text-danger">
+            Olá, @Model.Name | 
+        </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
         <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
-            <ul class="navbar-nav me-3 gap-2">
-
+            <ul class="navbar-nav gap-2">
                 <li class="nav-item">
-                    <a class="nav-link text-danger" asp-controller="Home" asp-action="Index">🏠 Página Inicial</a>
+                    <a class="nav-link text-danger" asp-controller="Home" asp-action="Index"><i class="fas fa-home"></i> Página Inicial</a>
                 </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-success" href="#" id="vendasDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        🛒 Vendas
+                        <i class="fas fa-shopping-cart"></i> Vendas
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="vendasDropdown">
-                        <li><a class="dropdown-item" asp-controller="Sale" asp-action="Index">🛒 PDV</a></li>
-                        <li><a class="dropdown-item" asp-controller="CashRegister" asp-action="Index">💰 Caixa</a></li>
+                        <li><a class="dropdown-item" asp-controller="Sale" asp-action="Index"><i class="fas fa-cash-register"></i> PDV</a></li>
+                        <li><a class="dropdown-item" asp-controller="CashRegister" asp-action="Index"><i class="fas fa-money-bill-wave"></i> Caixa</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-danger" href="#" id="adminDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        🧾 Administração
+                        <i class="fas fa-file-invoice"></i> Administração
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-                        <li><a class="dropdown-item" asp-controller="Contact" asp-action="Index">📞 Fornecedores</a></li>
+                        <li><a class="dropdown-item" asp-controller="Contact" asp-action="Index"><i class="fas fa-phone"></i> Fornecedores</a></li>
                         @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
                         {
-                            <li><a class="dropdown-item" asp-controller="User" asp-action="Index">👤 Usuários</a></li>
+                            <li><a class="dropdown-item" asp-controller="User" asp-action="Index"><i class="fas fa-users-cog"></i> Usuários</a></li>
                         }
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-dark" href="#" id="estoqueDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        📦 Estoque
+                        <i class="fas fa-boxes"></i> Estoque
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="estoqueDropdown">
-                        <li><a class="dropdown-item" asp-controller="Product" asp-action="Index">📦 Produtos</a></li>
-                        <li><a class="dropdown-item" asp-controller="StockMovement" asp-action="Index">📊 Movimentações</a></li>
+                        <li><a class="dropdown-item" asp-controller="Product" asp-action="Index"><i class="fas fa-box"></i> Produtos</a></li>
+                        <li><a class="dropdown-item" asp-controller="StockMovement" asp-action="Index"><i class="fas fa-exchange-alt"></i> Movimentações</a></li>
                     </ul>
                 </li>
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-info" href="#" id="relatoriosDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        📊 Relatórios
+                        <i class="fas fa-chart-bar"></i> Relatórios
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="relatoriosDropdown">
-                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index">📈 Dashboard</a></li>
-                        <li><a class="dropdown-item" asp-controller="Report" asp-action="SalesReport">🔍 Relatório de Vendas</a></li>
+                        <li><a class="dropdown-item" asp-controller="Dashboard" asp-action="Index"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+                        <li><a class="dropdown-item" asp-controller="Report" asp-action="SalesReport"><i class="fas fa-search-dollar"></i> Relatório de Vendas</a></li>
                     </ul>
                 </li>
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-warning" href="#" id="wardenLoversDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ❤️ Warden Lovers
+                        <i class="fas fa-heart"></i> Warden Lovers
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="wardenLoversDropdown">
-                        <li><a class="dropdown-item" asp-controller="LoyalCustomer" asp-action="Index">👥 Clientes Fidelizados</a></li>
+                        <li><a class="dropdown-item" asp-controller="LoyalCustomer" asp-action="Index"><i class="fas fa-users"></i> Clientes Fidelizados</a></li>
                     </ul>
                 </li>
-
 
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle text-dark" href="#" id="menuDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        ⚙️ Menu
+                        <i class="fas fa-cog"></i> Menu
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuDropdown">
-                        <li><a class="dropdown-item" asp-controller="EditPassword" asp-action="Index">🔑 Alterar Senha</a></li>
-                        <li><a class="dropdown-item" asp-controller="Login" asp-action="Logout">🚪 Sair</a></li>
+                        <li><a class="dropdown-item" asp-controller="EditPassword" asp-action="Index"><i class="fas fa-key"></i> Alterar Senha</a></li>
+                        <li><a class="dropdown-item" asp-controller="Login" asp-action="Logout"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
                     </ul>
                 </li>
-
             </ul>
         </div>
     </div>
