@@ -119,7 +119,6 @@
 
         let itemIndex = 0;
 
-        // Função para adicionar itens à tabela de venda
         function addItem(productId, productName, price) {
             const qtyInput = document.getElementById('qty-' + productId);
             const quantity = parseInt(qtyInput.value);
@@ -191,7 +190,7 @@
 
             $('#CashbackUsed').val(valueToUse.toFixed(2));
             $('#ApplyCashback').val("true");
-            $('#appliedCashbackAmount').text(valueToUse.toFixed(2)); // Atualiza o valor visível
+            $('#appliedCashbackAmount').text(valueToUse.toFixed(2)); 
             $('#cashbackModal').hide();
         });
 
@@ -199,7 +198,7 @@
             $('#CashbackUsed').val("0");
             $('#ApplyCashback').val("false");
             $('#cashbackModal').hide();
-            $('#appliedCashbackAmount').text("0.00"); // Reseta o valor visível
+            $('#appliedCashbackAmount').text("0.00");
         });
     </script>
 }

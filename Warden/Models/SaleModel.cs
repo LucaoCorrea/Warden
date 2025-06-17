@@ -35,6 +35,10 @@ namespace Warden.Models
 
                 return totalItems - CashbackUsed;
             }
+            set
+            {
+
+            }
         }
 
         public decimal CashbackAvailable { get; set; }

@@ -82,14 +82,20 @@ namespace Warden.Services
                 var customer = sale.LoyalCustomer;
                 var maxUsable = Math.Min(customer.CashbackBalance, rawTotal);
 
-                sale.CashbackUsed = maxUsable; // Atualizando o CashbackUsed
+                sale.CashbackUsed = maxUsable; 
 
                 finalTotal -= maxUsable;
+
+                if (finalTotal < 0)
+                {
+                    finalTotal = 0;
+                }
 
                 customer.CashbackBalance -= maxUsable;
                 _customerRepo.Update(customer);
             }
 
+            // logica de cashback
             decimal cashbackPercentage = 0m;
 
             if (finalTotal < 50)
@@ -107,12 +113,14 @@ namespace Warden.Services
                 _customerRepo.Update(sale.LoyalCustomer);
             }
 
-        
-            _saleRepo.Add(sale); 
-            _context.SaveChanges();  
+            sale.TotalAmount = finalTotal; 
+
+            _saleRepo.Add(sale);
+            _context.SaveChanges();
 
             return sale.Id;
         }
+
 
 
 

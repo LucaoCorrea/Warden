@@ -155,7 +155,8 @@ namespace Warden.Migrations
                     LoyalCustomerId = table.Column<int>(type: "int", nullable: true),
                     ApplyCashback = table.Column<bool>(type: "bit", nullable: false),
                     CashbackUsed = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CashbackAvailable = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
                 {

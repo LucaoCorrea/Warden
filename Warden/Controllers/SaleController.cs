@@ -57,6 +57,8 @@ namespace Warden.Controllers
             return View();
         }
 
+        // metodo para criação de vendas PDV
+
         [HttpPost]
         public IActionResult Create(SaleModel sale, bool ApplyCashback, decimal CashbackUsed)
         {
@@ -93,18 +95,25 @@ namespace Warden.Controllers
 
             try
             {
+            
                 if (ApplyCashback && customer != null && CashbackUsed > 0)
                 {
                     CashbackUsed = Math.Min(CashbackUsed, customer.CashbackBalance);
                     CashbackUsed = Math.Min(CashbackUsed, sale.TotalAmount);
 
                     sale.CashbackUsed = CashbackUsed;
+                    sale.TotalAmount -= CashbackUsed;  
 
                     customer.CashbackBalance -= CashbackUsed;
                     _customerRepo.Update(customer);
                 }
+                else
+                {
+                    sale.CashbackUsed = 0;
+                }
 
                 var saleId = _saleService.ProcessSale(sale);
+
                 return RedirectToAction(nameof(Receipt), new { id = saleId });
             }
             catch (Exception ex)
@@ -115,6 +124,8 @@ namespace Warden.Controllers
                 return View(sale);
             }
         }
+
+
 
         [HttpGet]
         public IActionResult GetCashback(int customerId)

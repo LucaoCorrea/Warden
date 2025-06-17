@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250617140955_Tbls")]
+    [Migration("20250617182755_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />
@@ -273,6 +273,9 @@ namespace Warden.Migrations
 
                     b.Property<bool>("ApplyCashback")
                         .HasColumnType("bit");
+
+                    b.Property<decimal>("CashbackAvailable")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("CashbackUsed")
                         .HasColumnType("decimal(18,2)");
