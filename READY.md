@@ -83,4 +83,23 @@ Se preferir, gere as migrações manualmente:
 
 > ⚠️ Esses dados são criados automaticamente se você rodar com o banco limpo.
 
+## 🔗 Dependências e Justificativas de Versões
+
+O projeto utiliza as seguintes bibliotecas e versões específicas, escolhidas com base na estabilidade, compatibilidade com .NET 8 e recursos necessários para o escopo atual da aplicação.
+
+
+
+## 🔗 Dependências e Justificativas de Versões
+
+| Biblioteca                                | Versão   | Descrição                                                                                                                              |
+|--------------------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------|
+| **ClosedXML**                              | 0.105.0  | Geração e manipulação de arquivos Excel (.xlsx) de forma simples. Versão estável e compatível.                                        |
+| **Microsoft.CodeAnalysis + CSharp + Scripting** | 4.14.0  | Ferramentas internas para análise, compilação dinâmica e geração de código. Mantida na versão mais recente para acompanhar melhorias. |
+| **Microsoft.EntityFrameworkCore**          | 9.0.5    | ORM utilizado. Compatível com .NET 8, focado em estabilidade e melhorias de desempenho.                                               |
+| **EntityFrameworkCore.Design**             | 9.0.5    | Suporte a migrações e scaffolding no desenvolvimento. Mesma versão do EF Core para evitar conflitos.                                  |
+| **EntityFrameworkCore.SqlServer**          | 9.0.5    | Provedor oficial para SQL Server. Alinhado ao EF Core.                                                                                |
+| **EntityFrameworkCore.Tools**              | 9.0.5    | Ferramentas de linha de comando para manutenção de banco (migrations, update, etc).                                                   |
+| **Newtonsoft.Json**                        | 13.0.3   | Serialização e desserialização de JSON. Mantido por sua maturidade, performance e compatibilidade superior em cenários complexos.     |
+| **QuestPDF**                               | 2025.5.1 | Geração de PDFs de alta qualidade com foco em layout profissional. Utiliza a versão atualizada para garantir acesso às melhorias.     |
+
 
