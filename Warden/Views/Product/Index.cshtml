@@ -5,6 +5,10 @@
 
 <h2>Produtos</h2>
 <a class="btn btn-primary mb-3" asp-action="Create">Novo Produto</a>
+
+<form asp-action="ExportToExcel" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-success mb-3">📥 Exportar para Excel</button>
+</form>
 <table id="productsTable" class="table table-bordered table-striped">
     <thead class="table-danger">
         <tr>

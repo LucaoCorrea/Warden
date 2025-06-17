@@ -4,6 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
 
+<!--Modal de atualização | se atentar para proximas atualizações-->
 @if (ViewBag.ShowReleaseNotes == true)
 {
     var note = (ReleaseNoteModel)ViewBag.ReleaseNote;
@@ -11,7 +12,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">🚀 O que há de novo - Versão @note.Version</h5>
+                    <h5 class="modal-title">🚀 Versão @note.Version</h5>
                 </div>
                 <div class="modal-body">
                     <h6>@note.Title</h6>
@@ -190,11 +191,21 @@
         once: true,
         easing: 'ease-in-out'
     });
+
     window.onload = function () {
-        var releaseModal = new bootstrap.Modal(document.getElementById('releaseNotesModal'));
-        releaseModal.show();
+        var alreadyShown = localStorage.getItem("releaseNotesShown");
+
+        if (!alreadyShown) {
+            var releaseModalElement = document.getElementById('releaseNotesModal');
+            if (releaseModalElement) {
+                var releaseModal = new bootstrap.Modal(releaseModalElement);
+                releaseModal.show();
+                localStorage.setItem("releaseNotesShown", "true");
+            }
+        }
     };
 </script>
+
 
 <style>
     .carousel-image {

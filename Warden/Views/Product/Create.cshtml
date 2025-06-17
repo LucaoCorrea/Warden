@@ -54,7 +54,16 @@
 
         <div class="mb-3">
             <label asp-for="Unit" class="form-label">📏 Unidade</label>
-            <input asp-for="Unit" class="form-control" placeholder="Ex: un, kg, m" />
+            <select asp-for="Unit" class="form-select">
+                <option value="">Selecione...</option>
+                <option value="Unidade">Unidade</option>
+                <option value="Litros">Litros</option>
+                <option value="Ml">Mililitros</option>
+                <option value="Kg">Quilos</option>
+                <option value="g">Gramas</option>
+                <option value="m">Metros</option>
+                <option value="cm">Centímetros</option>
+            </select>
             <span asp-validation-for="Unit" class="text-danger"></span>
         </div>
 

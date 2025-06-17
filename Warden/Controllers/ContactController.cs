@@ -55,18 +55,33 @@ namespace Warden.Controllers
 
             contactModel.UserId = userLogged.Id;
 
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
-                TempData["MensagemErro"] = string.Join(" | ", errors);
-                return View(contactModel);
+                var existingContacts = _contactRepository.getAll(userLogged.Id);
+
+                if (existingContacts.Any(c => c.Name == contactModel.Name))
+                    ModelState.AddModelError("Name", "Já existe um contato com este nome.");
+
+                if (existingContacts.Any(c => c.Email == contactModel.Email))
+                    ModelState.AddModelError("Email", "Já existe um contato com este email.");
+
+                if (!ModelState.IsValid)
+                {
+                    var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+                    TempData["MensagemErro"] = string.Join(" | ", errors);
+                    return View(contactModel);
+                }
+
+                _contactRepository.Add(contactModel);
+                TempData["MensagemSucesso"] = "Contato cadastrado com sucesso!";
+                return RedirectToAction("Index");
             }
 
-            _contactRepository.Add(contactModel);
-
-            TempData["MensagemSucesso"] = "Contato cadastrado com sucesso!";
-            return RedirectToAction("Index");
+            var modelErrors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+            TempData["MensagemErro"] = string.Join(" | ", modelErrors);
+            return View(contactModel);
         }
+
 
         [HttpPost]
         public IActionResult Edit(ContactModel contactModel)

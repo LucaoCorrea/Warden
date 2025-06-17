@@ -29,11 +29,24 @@ public class LoyalCustomerController : Controller
     {
         if (!ModelState.IsValid) return View(model);
 
+        bool nameExists = await _context.LoyalCustomers.AnyAsync(c => c.Name == model.Name);
+        bool emailExists = await _context.LoyalCustomers.AnyAsync(c => c.Email == model.Email);
+
+        if (nameExists)
+            ModelState.AddModelError("Name", "Já existe um cliente com este nome.");
+
+        if (emailExists)
+            ModelState.AddModelError("Email", "Já existe um cliente com este email.");
+
+        if (!ModelState.IsValid)
+            return View(model);
+
         _context.LoyalCustomers.Add(model);
         await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
+
 
     [HttpPost]
     public IActionResult Export()

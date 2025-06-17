@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250616175350_Tbls")]
+    [Migration("20250616234603_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />

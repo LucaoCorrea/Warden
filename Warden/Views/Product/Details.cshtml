@@ -9,7 +9,6 @@
 
     <div class="border p-4 rounded shadow-sm bg-light" data-aos="fade-right">
         <div class="row g-4 align-items-center">
-            <!-- Detalhes do Produto -->
             <div class="col-md-6">
                 <dl class="row">
                     <dt class="col-sm-4">🏷️ Nome</dt>
@@ -35,13 +34,11 @@
                 </dl>
             </div>
 
-            <!-- Imagem do Produto -->
             <div class="col-md-6 text-center">
                 <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" style="max-height: 300px;" />
             </div>
         </div>
 
-        <!-- Botões -->
         <div class="mt-4 d-flex justify-content-between">
             <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">✏️ Editar</a>

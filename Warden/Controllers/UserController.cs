@@ -62,7 +62,6 @@ namespace Warden.Controllers
             return PartialView("_ContactsUser", contacts);
         }
 
-        // Endpoints
         [HttpPost]
         public IActionResult Create(UserModel user)
         {
@@ -70,18 +69,36 @@ namespace Warden.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    UserModel userCreated = _userRepository.Create(user);
+                    var existingUsers = _userRepository.GetAll();
+
+                    void AddErrorIfExists(string field, Func<UserModel, bool> predicate, string errorMsg)
+                    {
+                        if (existingUsers.Any(predicate))
+                            ModelState.AddModelError(field, errorMsg);
+                    }
+
+                    AddErrorIfExists("Login", u => u.Login == user.Login, "Este login já está em uso.");
+                    AddErrorIfExists("Email", u => u.Email == user.Email, "Este e-mail já está em uso.");
+                    AddErrorIfExists("Name", u => u.Name == user.Name, "Este nome já está em uso.");
+
+                    if (!ModelState.IsValid)
+                        return View(user);
+
+                    _userRepository.Create(user);
                     TempData["MensagemSucesso"] = "Usuário cadastrado com sucesso!";
                     return RedirectToAction("Index");
                 }
+
                 return View(user);
             }
             catch (Exception err)
             {
-                TempData["MensagemErro"] = $"Ops, não conseguimos cadastrar seu usuário, tente novamante, detalhe do erro: {err.Message}";
+                TempData["MensagemErro"] = $"Ops, não conseguimos cadastrar seu usuário. Detalhes do erro: {err.Message}";
                 return RedirectToAction("Index");
             }
         }
+
+
 
         [HttpPost]
         public IActionResult Edit(UserNoPasswordModel userNoPassword)

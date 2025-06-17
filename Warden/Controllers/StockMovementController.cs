@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Warden.Models;
 using Warden.Services;
@@ -37,6 +38,43 @@ namespace Warden.Controllers
 
             _service.Add(model);
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public IActionResult ExportToExcel()
+        {
+            var movements = _service.GetAll();
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Movimentações");
+
+            worksheet.Cell("A1").Value = "Produto";
+            worksheet.Cell("B1").Value = "Tipo";
+            worksheet.Cell("C1").Value = "Quantidade";
+            worksheet.Cell("D1").Value = "Valor Total";
+            worksheet.Cell("E1").Value = "Data";
+
+            int currentRow = 2;
+
+            foreach (var item in movements)
+            {
+                worksheet.Cell(currentRow, 1).Value = item.Product?.Name ?? "N/A";
+                worksheet.Cell(currentRow, 2).Value = item.Type.ToString();
+                worksheet.Cell(currentRow, 3).Value = item.Quantity;
+                worksheet.Cell(currentRow, 4).Value = item.TotalValue;
+                worksheet.Cell(currentRow, 5).Value = item.CreatedAt.ToString("dd/MM/yyyy HH:mm");
+                currentRow++;
+            }
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            var fileName = $"MovimentacoesEstoque_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+
+            return File(stream.ToArray(),
+                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                        fileName);
         }
     }
 }
