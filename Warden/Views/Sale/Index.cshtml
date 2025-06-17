@@ -13,37 +13,10 @@
 }
 <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
 
-<div class="container py-5" >
+<div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-success">📋 Histórico de Vendas</h2>
         <a asp-action="Create" class="btn btn-success">➕ Nova Venda</a>
-    </div>
-
-    <div class="modal " id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <form asp-action="Export" method="post" id="exportForm">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exportModalLabel">Filtrar e Exportar</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="startDate" class="form-label">Data Inicial</label>
-                            <input type="date" class="form-control" id="startDate" name="startDate" required />
-                        </div>
-                        <div class="mb-3">
-                            <label for="endDate" class="form-label">Data Final</label>
-                            <input type="date" class="form-control" id="endDate" name="endDate" required />
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary">Gerar Excel</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
 
     <div class="table-responsive">
@@ -55,6 +28,7 @@
                     <th>👤 Vendedor</th>
                     <th>💳 Pagamento</th>
                     <th>📦 Itens</th>
+                    <th>❤️ Warden Lover</th>
                     <th>💰 Valor Total</th>
                 </tr>
             </thead>
@@ -65,47 +39,34 @@
                     {
                         var key = sale.PaymentMethod.ToString();
                         var paymentLabel = paymentMethodLabels.ContainsKey(key) ? paymentMethodLabels[key] : key;
-                        var total = sale.Items?.Sum(i => i.Quantity * i.UnitPrice) ?? 0;
 
-                        <tr data-aos="fade-up" data-aos-delay="100">
+                        <tr>
                             <td>@sale.Id</td>
                             <td>@sale.SaleDate.ToString("dd/MM/yyyy HH:mm")</td>
                             <td>@sale.UserName</td>
                             <td>@paymentLabel</td>
                             <td>@(sale.Items?.Count ?? 0)</td>
-                            <td>R$ @total.ToString("F2")</td>
+                            <td>@(sale.LoyalCustomer?.Name ?? "-")</td>
+                            <td>
+                                R$ @(sale.TotalAmount + sale.CashbackUsed)
+                                <br />
+                                <small>(- R$ @sale.CashbackUsed.ToString("F2") cashback)</small>
+                                <br />
+                                <strong>R$ @sale.TotalAmount.ToString("F2")</strong>
+                            </td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="6" class="text-muted">Nenhuma venda registrada.</td>
+                        <td colspan="8" class="text-muted">Nenhuma venda registrada.</td>
                     </tr>
                 }
             </tbody>
         </table>
     </div>
-    <button type="button" class="btn btn-success mb-4" data-bs-toggle="modal" data-bs-target="#exportModal">
-        📤 Exportar Excel
-    </button>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
-<script>
-    AOS.init({
-        duration: 600,
-        once: true,
-        easing: 'ease-in-out'
-    });
-</script>
 
-<style>
-    #table-sales th, #table-sales td {
-        vertical-align: middle;
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-    }
-</style>

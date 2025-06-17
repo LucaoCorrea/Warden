@@ -1,11 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using Warden.Models;
-using Warden.Services;
 using Warden.Repositories;
-using ClosedXML.Excel;
+using Warden.Repository;
+using Warden.Services;
 
 namespace Warden.Controllers
 {
@@ -14,24 +16,35 @@ namespace Warden.Controllers
         private readonly SaleService _saleService;
         private readonly IProductRepository _productRepo;
         private readonly CashRegisterService _cashService;
+        private readonly ICustomerRepository _customerRepo;
 
-        public SaleController(SaleService saleService, IProductRepository productRepo, CashRegisterService cashService)
+        public SaleController(SaleService saleService, IProductRepository productRepo, CashRegisterService cashService, ICustomerRepository customerRepo)
         {
             _saleService = saleService;
             _productRepo = productRepo;
             _cashService = cashService;
+            _customerRepo = customerRepo;
         }
 
         public IActionResult Index()
         {
-            var sales = _saleService.GetAll();
+            var sales = _saleService.GetAll().ToList();
+
+            foreach (var sale in sales)
+            {
+                if (sale.LoyalCustomerId.HasValue)
+                {
+                    sale.LoyalCustomer = _customerRepo.GetById(sale.LoyalCustomerId.Value);
+                }
+            }
+
             return View(sales);
         }
 
         public IActionResult Create()
         {
-            var caixaAberto = _cashService.GetOpenRegister();
-            if (caixaAberto == null)
+            var openCash = _cashService.GetOpenRegister();
+            if (openCash == null)
             {
                 TempData["Error"] = "Você precisa abrir o caixa antes de iniciar uma venda.";
                 return RedirectToAction("Index", "CashRegister");
@@ -39,14 +52,16 @@ namespace Warden.Controllers
 
             var products = _productRepo.GetAll();
             ViewBag.Products = products;
+            ViewBag.CustomerList = new SelectList(_customerRepo.GetAll(), "Id", "Name");
+
             return View();
         }
 
         [HttpPost]
-        public IActionResult Create(SaleModel sale)
+        public IActionResult Create(SaleModel sale, bool ApplyCashback, decimal CashbackUsed)
         {
-            var caixaAberto = _cashService.GetOpenRegister();
-            if (caixaAberto == null)
+            var openCash = _cashService.GetOpenRegister();
+            if (openCash == null)
             {
                 TempData["Error"] = "Você precisa abrir o caixa antes de concluir uma venda.";
                 return RedirectToAction("Index", "CashRegister");
@@ -55,27 +70,72 @@ namespace Warden.Controllers
             if (!ModelState.IsValid || sale.Items == null || !sale.Items.Any())
             {
                 ViewBag.Products = _productRepo.GetAll();
+                ViewBag.CustomerList = new SelectList(_customerRepo.GetAll(), "Id", "Name");
                 ModelState.AddModelError("", "Por favor, adicione pelo menos um item à venda.");
                 return View(sale);
             }
 
+            LoyalCustomerModel? customer = null;
+
+            if (sale.LoyalCustomerId.HasValue)
+            {
+                customer = _customerRepo.GetById(sale.LoyalCustomerId.Value);
+                if (customer == null)
+                {
+                    ViewBag.Products = _productRepo.GetAll();
+                    ViewBag.CustomerList = new SelectList(_customerRepo.GetAll(), "Id", "Name");
+                    ModelState.AddModelError("LoyalCustomerId", "Cliente fidelizado não encontrado.");
+                    return View(sale);
+                }
+
+                sale.LoyalCustomer = customer;
+            }
+
             try
             {
+                if (ApplyCashback && customer != null && CashbackUsed > 0)
+                {
+                    CashbackUsed = Math.Min(CashbackUsed, customer.CashbackBalance);
+                    CashbackUsed = Math.Min(CashbackUsed, sale.TotalAmount);
+
+                    sale.CashbackUsed = CashbackUsed;
+
+                    customer.CashbackBalance -= CashbackUsed;
+                    _customerRepo.Update(customer);
+                }
+
                 var saleId = _saleService.ProcessSale(sale);
                 return RedirectToAction(nameof(Receipt), new { id = saleId });
             }
             catch (Exception ex)
             {
                 ViewBag.Products = _productRepo.GetAll();
+                ViewBag.CustomerList = new SelectList(_customerRepo.GetAll(), "Id", "Name");
                 ModelState.AddModelError("", ex.Message);
                 return View(sale);
             }
+        }
+
+        [HttpGet]
+        public IActionResult GetCashback(int customerId)
+        {
+            var customer = _customerRepo.GetById(customerId);
+            if (customer == null)
+                return Json(new { cashback = 0m });
+
+            return Json(new { cashback = customer.CashbackBalance });
         }
 
         public IActionResult Receipt(int id)
         {
             var sale = _saleService.GetById(id);
             if (sale == null) return NotFound();
+
+            if (sale.LoyalCustomer == null && sale.LoyalCustomerId.HasValue)
+            {
+                sale.LoyalCustomer = _customerRepo.GetById(sale.LoyalCustomerId.Value);
+            }
+
             return View(sale);
         }
 
@@ -225,13 +285,7 @@ namespace Warden.Controllers
 
             using var stream = new MemoryStream();
             workbook.SaveAs(stream);
-            stream.Position = 0;
-
-            var fileName = $"RelatorioVendas_{startDate:yyyyMMdd}_{endDate:yyyyMMdd}.xlsx";
-
-            return File(stream.ToArray(),
-                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                        fileName);
+            return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "relatorio_vendas.xlsx");
         }
     }
 }

@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250616234603_Tbls")]
+    [Migration("20250617140955_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />
@@ -271,6 +271,15 @@ namespace Warden.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("ApplyCashback")
+                        .HasColumnType("bit");
+
+                    b.Property<decimal>("CashbackUsed")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("LoyalCustomerId")
+                        .HasColumnType("int");
+
                     b.Property<int>("PaymentMethod")
                         .HasColumnType("int");
 
@@ -285,6 +294,8 @@ namespace Warden.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LoyalCustomerId");
 
                     b.ToTable("Sales");
                 });
@@ -417,6 +428,15 @@ namespace Warden.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Sale");
+                });
+
+            modelBuilder.Entity("Warden.Models.SaleModel", b =>
+                {
+                    b.HasOne("Warden.Models.LoyalCustomerModel", "LoyalCustomer")
+                        .WithMany()
+                        .HasForeignKey("LoyalCustomerId");
+
+                    b.Navigation("LoyalCustomer");
                 });
 
             modelBuilder.Entity("Warden.Models.StockMovementModel", b =>

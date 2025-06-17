@@ -3,6 +3,7 @@ using Warden.Data;
 using Warden.Enums;
 using Warden.Models;
 using Warden.Repositories;
+using Warden.Repository;
 
 namespace Warden.Services
 {
@@ -11,20 +12,23 @@ namespace Warden.Services
         private readonly ISaleRepository _saleRepo;
         private readonly IProductRepository _productRepo;
         private readonly IStockMovementRepository _stockRepo;
+        private readonly ICustomerRepository _customerRepo;
         private readonly AppDbContext _context;
 
-        public SaleService(ISaleRepository saleRepo, IProductRepository productRepo, IStockMovementRepository stockRepo, AppDbContext context)
+        public SaleService(ISaleRepository saleRepo, IProductRepository productRepo, IStockMovementRepository stockRepo, AppDbContext context, ICustomerRepository customerRepo)
         {
             _saleRepo = saleRepo;
             _productRepo = productRepo;
             _stockRepo = stockRepo;
             _context = context;
+            _customerRepo = customerRepo;
         }
 
         public IEnumerable<SaleModel> GetAll()
         {
             return _context.Sales
                 .Include(s => s.Items)
+                .Include(s => s.LoyalCustomer) 
                 .ToList();
         }
 
@@ -32,6 +36,7 @@ namespace Warden.Services
         {
             return _context.Sales
                 .Include(s => s.Items)
+                .Include(s => s.LoyalCustomer) 
                 .FirstOrDefault(s => s.Id == id);
         }
 
@@ -69,11 +74,47 @@ namespace Warden.Services
                 });
             }
 
-            sale.TotalAmount = sale.Items.Sum(i => i.Quantity * i.UnitPrice);
+            var rawTotal = sale.Items.Sum(i => i.Quantity * i.UnitPrice);
+            var finalTotal = rawTotal;
 
-            _saleRepo.Add(sale);
+            if (sale.ApplyCashback && sale.LoyalCustomer != null)
+            {
+                var customer = sale.LoyalCustomer;
+                var maxUsable = Math.Min(customer.CashbackBalance, rawTotal);
+
+                sale.CashbackUsed = maxUsable; // Atualizando o CashbackUsed
+
+                finalTotal -= maxUsable;
+
+                customer.CashbackBalance -= maxUsable;
+                _customerRepo.Update(customer);
+            }
+
+            decimal cashbackPercentage = 0m;
+
+            if (finalTotal < 50)
+                cashbackPercentage = 0.01m;
+            else if (finalTotal <= 100)
+                cashbackPercentage = 0.015m;
+            else
+                cashbackPercentage = 0.02m;
+
+            decimal cashbackEarned = finalTotal * cashbackPercentage;
+
+            if (sale.LoyalCustomer != null)
+            {
+                sale.LoyalCustomer.CashbackBalance += cashbackEarned;
+                _customerRepo.Update(sale.LoyalCustomer);
+            }
+
+        
+            _saleRepo.Add(sale); 
+            _context.SaveChanges();  
+
             return sale.Id;
         }
+
+
 
     }
 }

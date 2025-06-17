@@ -1,34 +1,55 @@
 ﻿@model Warden.Models.SaleModel
 
-<h2>Detalhes da Venda #@Model.Id</h2>
-<p>Vendedor: @Model.UserName</p>
-<p>Forma de Pagamento: @Model.PaymentMethod</p>
+@{
+    ViewData["Title"] = $"Nota Fiscal - Venda #{Model.Id}";
+}
 
-<h3>Itens</h3>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Produto ID</th>
-            <th>Quantidade</th>
-            <th>Preço Unitário</th>
-            <th>Total</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Items)
-        {
+<div class="container py-5">
+    <h2 class="text-success mb-4">📄 Nota Fiscal - Venda #@Model.Id</h2>
+
+    <div class="mb-3">
+        <strong>Data da Venda:</strong> @Model.SaleDate.ToString("dd/MM/yyyy HH:mm")
+    </div>
+    <div class="mb-3">
+        <strong>Vendedor:</strong> @Model.UserName
+    </div>
+    <div class="mb-3">
+        <strong>Forma de Pagamento:</strong> @Model.PaymentMethod.ToString()
+    </div>
+    <div class="mb-3">
+        <strong>Cliente Fidelizado:</strong> @(Model.LoyalCustomer?.Name ?? "Nenhum")
+    </div>
+
+    <h4 class="mt-4">Itens da Venda</h4>
+    <table class="table table-bordered">
+        <thead class="table-success">
             <tr>
-                <td>@item.ProductId</td>
-                <td>@item.Quantity</td>
-                <td>R$ @item.UnitPrice</td>
-                <td>R$ @(item.Quantity* item.UnitPrice)</td>
+                <th>Produto ID</th>
+                <th>Quantidade</th>
+                <th>Preço Unitário (R$)</th>
+                <th>Total (R$)</th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice.ToString("F2")</td>
+                    <td>@(item.Quantity* item.UnitPrice)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<p><strong>Total da Venda: R$ @Model.Items.Sum(i => i.Quantity * i.UnitPrice).ToString("F2")</strong></p>
+    <div class="mt-4">
+        <p><strong>Total bruto da venda:</strong> R$ @(Model.TotalAmount - Model.CashbackUsed)</p>
+        <p><strong>Cashback utilizado:</strong> R$ @Model.CashbackUsed.ToString("F2")</p>
+        <p><strong>Total líquido da venda:</strong> R$ @Model.TotalAmount.ToString("F2")</p>
+    </div>
 
-<a asp-action="DownloadReceipt" asp-route-id="@Model.Id" class="btn btn-primary">
-    📄 Baixar Nota Fiscal
-</a>
+    <a asp-action="DownloadReceipt" asp-route-id="@Model.Id" class="btn btn-primary mt-3">
+        📥 Baixar Nota Fiscal (PDF)
+    </a>
+</div>

@@ -39,6 +39,8 @@ namespace Warden
             services.AddScoped<StockMovementService>();
             services.AddScoped<ProductService>();
             services.AddScoped<SaleService>();
+            services.AddScoped<ICustomerRepository, LoyalCustomerRepository>();
+
 
             services.AddScoped<ICashRegisterRepository, CashRegisterRepository>();
             services.AddScoped<CashRegisterService>();

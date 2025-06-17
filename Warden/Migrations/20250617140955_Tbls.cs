@@ -87,22 +87,6 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Sales",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Sales", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "UserReleaseViews",
                 columns: table => new
                 {
@@ -160,6 +144,30 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Sales",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    PaymentMethod = table.Column<int>(type: "int", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LoyalCustomerId = table.Column<int>(type: "int", nullable: true),
+                    ApplyCashback = table.Column<bool>(type: "bit", nullable: false),
+                    CashbackUsed = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Sales", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Sales_LoyalCustomers_LoyalCustomerId",
+                        column: x => x.LoyalCustomerId,
+                        principalTable: "LoyalCustomers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "StockMovement",
                 columns: table => new
                 {
@@ -180,6 +188,27 @@ namespace Warden.Migrations
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Contacts_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -210,27 +239,6 @@ namespace Warden.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.CreateTable(
-                name: "Contacts",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Phone = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Contacts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Contacts_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_CashMovements_CashRegisterId",
                 table: "CashMovements",
@@ -252,6 +260,11 @@ namespace Warden.Migrations
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Sales_LoyalCustomerId",
+                table: "Sales",
+                column: "LoyalCustomerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_StockMovement_ProductId",
                 table: "StockMovement",
                 column: "ProductId");
@@ -265,9 +278,6 @@ namespace Warden.Migrations
 
             migrationBuilder.DropTable(
                 name: "Contacts");
-
-            migrationBuilder.DropTable(
-                name: "LoyalCustomers");
 
             migrationBuilder.DropTable(
                 name: "ReleaseNotes");
@@ -292,6 +302,9 @@ namespace Warden.Migrations
 
             migrationBuilder.DropTable(
                 name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "LoyalCustomers");
         }
     }
 }
