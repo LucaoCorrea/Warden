@@ -156,12 +156,12 @@ namespace Warden
 
         private void CreateDefaultReleaseNote(AppDbContext context)
         {
-            if (!context.ReleaseNotes.Any(r => r.Version == "BETA - 1.1.2.25"))
+            if (!context.ReleaseNotes.Any(r => r.Version == "BETA - 1.2.2.25"))
             {
                 var release = new ReleaseNoteModel
                 {
                     Title = "Nota de Atualização",
-                    Version = "BETA-1.2.25",
+                    Version = "BETA - 1.2.2.25",
                     Description = @"
 - Novo sistema de vendas com integração ao estoque
 - Módulo de Caixa completo com abertura, fechamento e histórico
