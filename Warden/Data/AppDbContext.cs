@@ -26,6 +26,7 @@ namespace Warden.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new ContactMap());
+            modelBuilder.ApplyConfiguration(new SaleMap());
 
             base.OnModelCreating(modelBuilder);
         }

@@ -13,14 +13,6 @@
 <div class="container py-5" data-aos="fade-up">
     <h2 class="mb-4 text-success">🛒 Nova Venda</h2>
 
-    @if (success)
-    {
-        <div class="alert alert-success">
-            Venda finalizada com sucesso! 🎉
-            <a class="btn btn-primary ms-3" href="@Url.Action("DownloadInvoice", new { saleId })" target="_blank">📄 Baixar Nota Fiscal</a>
-        </div>
-    }
-
     <form asp-action="Create" method="post" id="saleForm">
         @Html.AntiForgeryToken()
 
@@ -73,6 +65,7 @@
                     <th>Qtd</th>
                     <th>Unitário</th>
                     <th>Total</th>
+                    <th>Valor Total com Cashback</th>
                     <th></th>
                 </tr>
             </thead>
@@ -86,8 +79,9 @@
             <p><strong>💸 Cashback Aplicado: </strong> R$ <span id="appliedCashbackAmount">0.00</span></p>
         </div>
 
-        <input type="hidden" name="ApplyCashback" id="ApplyCashback" value="false" />
         <input type="hidden" name="CashbackUsed" id="CashbackUsed" value="0" />
+        <input type="hidden" name="ApplyCashback" id="ApplyCashback" value="false" />
+
 
         <div class="d-flex justify-content-between mt-4">
             <a asp-action="Index" class="btn btn-outline-secondary">⬅️ Voltar</a>
@@ -127,6 +121,9 @@
             if (isNaN(unitPrice)) return;
 
             const total = (quantity * unitPrice).toFixed(2);
+            const cashbackUsed = parseFloat($('#CashbackUsed').val()) || 0;
+            const totalWithCashback = (total - cashbackUsed).toFixed(2);
+
             const tbody = document.getElementById("itemsTableBody");
 
             const row = document.createElement("tr");
@@ -135,6 +132,7 @@
                 <td>${quantity}</td>
                 <td>R$ ${unitPrice.toFixed(2)}</td>
                 <td>R$ ${total}</td>
+                <td>R$ ${totalWithCashback}</td>
                 <td><button type="button" class="btn btn-danger btn-sm" onclick="removeRow(this)">Remover</button></td>
             `;
             tbody.appendChild(row);
@@ -179,7 +177,7 @@
             });
         });
 
-        $('#applyCashbackBtn').click(function () {
+                $('#applyCashbackBtn').click(function () {
             const maxCashback = parseFloat($('#cashbackAmount').text());
             const valueToUse = parseFloat($('#cashbackInput').val());
 
@@ -189,8 +187,12 @@
             }
 
             $('#CashbackUsed').val(valueToUse.toFixed(2));
+
             $('#ApplyCashback').val("true");
-            $('#appliedCashbackAmount').text(valueToUse.toFixed(2)); 
+
+
+            $('#appliedCashbackAmount').text(valueToUse.toFixed(2));
+
             $('#cashbackModal').hide();
         });
 

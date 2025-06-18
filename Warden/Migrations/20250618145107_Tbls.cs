@@ -149,13 +149,13 @@ namespace Warden.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SaleDate = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     PaymentMethod = table.Column<int>(type: "int", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LoyalCustomerId = table.Column<int>(type: "int", nullable: true),
                     ApplyCashback = table.Column<bool>(type: "bit", nullable: false),
-                    CashbackUsed = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CashbackUsed = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
+                    TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false, defaultValue: 0m),
                     CashbackAvailable = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
                 },
                 constraints: table =>
@@ -165,30 +165,8 @@ namespace Warden.Migrations
                         name: "FK_Sales_LoyalCustomers_LoyalCustomerId",
                         column: x => x.LoyalCustomerId,
                         principalTable: "LoyalCustomers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "StockMovement",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    TotalValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_StockMovement", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_StockMovement_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -219,6 +197,7 @@ namespace Warden.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SaleId = table.Column<int>(type: "int", nullable: false),
+                    SaleId1 = table.Column<int>(type: "int", nullable: true),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false)
@@ -238,6 +217,40 @@ namespace Warden.Migrations
                         principalTable: "Sales",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_SaleItems_Sales_SaleId1",
+                        column: x => x.SaleId1,
+                        principalTable: "Sales",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "StockMovement",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Type = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    TotalValue = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SaleId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_StockMovement", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_StockMovement_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_StockMovement_Sales_SaleId",
+                        column: x => x.SaleId,
+                        principalTable: "Sales",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -261,6 +274,11 @@ namespace Warden.Migrations
                 column: "SaleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_SaleItems_SaleId1",
+                table: "SaleItems",
+                column: "SaleId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sales_LoyalCustomerId",
                 table: "Sales",
                 column: "LoyalCustomerId");
@@ -269,6 +287,11 @@ namespace Warden.Migrations
                 name: "IX_StockMovement_ProductId",
                 table: "StockMovement",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_StockMovement_SaleId",
+                table: "StockMovement",
+                column: "SaleId");
         }
 
         /// <inheritdoc />
@@ -299,10 +322,10 @@ namespace Warden.Migrations
                 name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Sales");
+                name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Sales");
 
             migrationBuilder.DropTable(
                 name: "LoyalCustomers");

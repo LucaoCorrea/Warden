@@ -49,80 +49,66 @@ namespace Warden.Services
 
         public int ProcessSale(SaleModel sale)
         {
-            sale.SaleDate = DateTime.Now;
-
-            foreach (var item in sale.Items)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                var product = _productRepo.GetById(item.ProductId);
-                if (product == null)
-                    throw new Exception($"Produto {item.ProductId} não encontrado.");
-
-                if (product.Stock < item.Quantity)
-                    throw new Exception($"Produto {product.Name} sem estoque suficiente.");
-
-                item.UnitPrice = product.SalePrice;
-
-                product.Stock -= item.Quantity;
-                _productRepo.Update(product);
-
-                _stockRepo.Add(new StockMovementModel
+                try
                 {
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    Type = MovementTypeEnum.Saída,
-                    TotalValue = item.Quantity * product.SalePrice,
-                });
-            }
+                    sale.SaleDate = DateTime.Now;
 
-            var rawTotal = sale.Items.Sum(i => i.Quantity * i.UnitPrice);
-            var finalTotal = rawTotal;
+                    foreach (var item in sale.Items)
+                    {
+                        var product = _productRepo.GetById(item.ProductId);
+                        if (product == null)
+                            throw new Exception($"Produto {item.ProductId} não encontrado.");
 
-            if (sale.ApplyCashback && sale.LoyalCustomer != null)
-            {
-                var customer = sale.LoyalCustomer;
-                var maxUsable = Math.Min(customer.CashbackBalance, rawTotal);
+                        if (product.Stock < item.Quantity)
+                            throw new Exception($"Produto {product.Name} sem estoque suficiente.");
 
-                sale.CashbackUsed = maxUsable; 
+                        item.UnitPrice = product.SalePrice;
 
-                finalTotal -= maxUsable;
+                        product.Stock -= item.Quantity;
+                        _productRepo.Update(product);
 
-                if (finalTotal < 0)
-                {
-                    finalTotal = 0;
+                        _stockRepo.Add(new StockMovementModel
+                        {
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,
+                            Type = MovementTypeEnum.Saída,
+                            TotalValue = item.Quantity * product.SalePrice,
+                        });
+                    }
+
+                    decimal cashbackPercentage = 0m;
+
+                    if (sale.TotalAmount < 50)
+                        cashbackPercentage = 0.01m;
+                    else if (sale.TotalAmount <= 100)
+                        cashbackPercentage = 0.015m;
+                    else
+                        cashbackPercentage = 0.02m;
+
+                    decimal cashbackEarned = sale.TotalAmount * cashbackPercentage;
+
+                    if (sale.LoyalCustomer != null)
+                    {
+                        sale.LoyalCustomer.CashbackBalance += cashbackEarned;
+                        _customerRepo.Update(sale.LoyalCustomer);
+                    }
+
+                    _saleRepo.Add(sale);
+                    _context.SaveChanges();
+
+                    transaction.Commit();
+
+                    return sale.Id;
                 }
-
-                customer.CashbackBalance -= maxUsable;
-                _customerRepo.Update(customer);
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw new Exception("Erro ao processar a venda: " + ex.Message);
+                }
             }
-
-            // logica de cashback
-            decimal cashbackPercentage = 0m;
-
-            if (finalTotal < 50)
-                cashbackPercentage = 0.01m;
-            else if (finalTotal <= 100)
-                cashbackPercentage = 0.015m;
-            else
-                cashbackPercentage = 0.02m;
-
-            decimal cashbackEarned = finalTotal * cashbackPercentage;
-
-            if (sale.LoyalCustomer != null)
-            {
-                sale.LoyalCustomer.CashbackBalance += cashbackEarned;
-                _customerRepo.Update(sale.LoyalCustomer);
-            }
-
-            sale.TotalAmount = finalTotal; 
-
-            _saleRepo.Add(sale);
-            _context.SaveChanges();
-
-            return sale.Id;
         }
-
-
-
 
     }
 }

@@ -12,7 +12,7 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250617182755_Tbls")]
+    [Migration("20250618145107_Tbls")]
     partial class Tbls
     {
         /// <inheritdoc />
@@ -251,6 +251,9 @@ namespace Warden.Migrations
                     b.Property<int>("SaleId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SaleId1")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("UnitPrice")
                         .HasColumnType("decimal(18,2)");
 
@@ -259,6 +262,8 @@ namespace Warden.Migrations
                     b.HasIndex("ProductId");
 
                     b.HasIndex("SaleId");
+
+                    b.HasIndex("SaleId1");
 
                     b.ToTable("SaleItems");
                 });
@@ -278,7 +283,9 @@ namespace Warden.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<decimal>("CashbackUsed")
-                        .HasColumnType("decimal(18,2)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<int?>("LoyalCustomerId")
                         .HasColumnType("int");
@@ -287,10 +294,14 @@ namespace Warden.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("SaleDate")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("GETDATE()");
 
                     b.Property<decimal>("TotalAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18,2)")
+                        .HasDefaultValue(0m);
 
                     b.Property<string>("UserName")
                         .IsRequired()
@@ -320,6 +331,9 @@ namespace Warden.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<int?>("SaleId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("TotalValue")
                         .HasColumnType("decimal(18,2)");
 
@@ -329,6 +343,8 @@ namespace Warden.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("SaleId");
 
                     b.ToTable("StockMovement");
                 });
@@ -422,11 +438,15 @@ namespace Warden.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Warden.Models.SaleModel", "Sale")
+                    b.HasOne("Warden.Models.SaleModel", null)
                         .WithMany("Items")
                         .HasForeignKey("SaleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Warden.Models.SaleModel", "Sale")
+                        .WithMany()
+                        .HasForeignKey("SaleId1");
 
                     b.Navigation("Product");
 
@@ -437,7 +457,8 @@ namespace Warden.Migrations
                 {
                     b.HasOne("Warden.Models.LoyalCustomerModel", "LoyalCustomer")
                         .WithMany()
-                        .HasForeignKey("LoyalCustomerId");
+                        .HasForeignKey("LoyalCustomerId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("LoyalCustomer");
                 });
@@ -450,7 +471,13 @@ namespace Warden.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Warden.Models.SaleModel", "Sale")
+                        .WithMany()
+                        .HasForeignKey("SaleId");
+
                     b.Navigation("Product");
+
+                    b.Navigation("Sale");
                 });
 
             modelBuilder.Entity("Warden.Models.CashRegisterModel", b =>

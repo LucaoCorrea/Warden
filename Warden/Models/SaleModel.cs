@@ -23,7 +23,6 @@ namespace Warden.Models
 
         public decimal CashbackUsed { get; set; }
 
-
         [Required(ErrorMessage = "Adicione pelo menos um item na venda")]
         public List<SaleItemModel> Items { get; set; } = new();
 
@@ -32,12 +31,11 @@ namespace Warden.Models
             get
             {
                 decimal totalItems = Items.Sum(item => item.Total);
-
                 return totalItems - CashbackUsed;
             }
             set
             {
-
+                // nao precisa passar nada aqui.
             }
         }
 

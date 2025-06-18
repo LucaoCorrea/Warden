@@ -90,6 +90,7 @@ namespace Warden.Controllers
             worksheet.Cell("F1").Value = "Data Fechamento";
             worksheet.Cell("G1").Value = "Valor Final";
             worksheet.Cell("H1").Value = "Diferença";
+            worksheet.Cell("I1").Value = "Total Amount";
 
             int currentRow = 2;
             foreach (var cr in cashRegisters)
@@ -102,6 +103,7 @@ namespace Warden.Controllers
                 worksheet.Cell(currentRow, 6).Value = cr.ClosedAt?.ToString("dd/MM/yyyy HH:mm") ?? "-";
                 worksheet.Cell(currentRow, 7).Value = cr.FinalAmount?.ToString("F2") ?? "-";
                 worksheet.Cell(currentRow, 8).Value = cr.Difference?.ToString("F2") ?? "-";
+                worksheet.Cell(currentRow, 9).Value = cr.FinalAmount?.ToString("F2") ?? "-";
                 currentRow++;
             }
 
@@ -126,7 +128,8 @@ namespace Warden.Controllers
             return Json(new
             {
                 openedAt = current.OpenedAt.ToString("dd/MM/yyyy HH:mm"),
-                initialAmount = current.InitialAmount.ToString("F2")
+                initialAmount = current.InitialAmount.ToString("F2"),
+                totalAmount = current.FinalAmount?.ToString("F2") ?? "0.00" 
             });
         }
     }

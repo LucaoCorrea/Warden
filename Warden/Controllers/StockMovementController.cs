@@ -17,8 +17,6 @@ namespace Warden.Controllers
             _productService = productService;
         }
 
-
-
         public IActionResult Index() => View(_service.GetAll());
 
         public IActionResult Create()
@@ -61,7 +59,7 @@ namespace Warden.Controllers
                 worksheet.Cell(currentRow, 1).Value = item.Product?.Name ?? "N/A";
                 worksheet.Cell(currentRow, 2).Value = item.Type.ToString();
                 worksheet.Cell(currentRow, 3).Value = item.Quantity;
-                worksheet.Cell(currentRow, 4).Value = item.TotalValue;
+                worksheet.Cell(currentRow, 4).Value = item.Sale?.TotalAmount ?? 0;  
                 worksheet.Cell(currentRow, 5).Value = item.CreatedAt.ToString("dd/MM/yyyy HH:mm");
                 currentRow++;
             }

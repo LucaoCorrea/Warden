@@ -95,14 +95,21 @@ namespace Warden.Controllers
 
             try
             {
-            
+                decimal rawTotal = sale.Items.Sum(i => i.Total);
+                decimal finalTotal = rawTotal;
+
                 if (ApplyCashback && customer != null && CashbackUsed > 0)
                 {
                     CashbackUsed = Math.Min(CashbackUsed, customer.CashbackBalance);
-                    CashbackUsed = Math.Min(CashbackUsed, sale.TotalAmount);
+                    CashbackUsed = Math.Min(CashbackUsed, finalTotal);
 
                     sale.CashbackUsed = CashbackUsed;
-                    sale.TotalAmount -= CashbackUsed;  
+                    finalTotal -= CashbackUsed;
+
+                    if (finalTotal < 0)
+                    {
+                        finalTotal = 0;
+                    }
 
                     customer.CashbackBalance -= CashbackUsed;
                     _customerRepo.Update(customer);
@@ -111,6 +118,8 @@ namespace Warden.Controllers
                 {
                     sale.CashbackUsed = 0;
                 }
+
+                sale.TotalAmount = finalTotal;
 
                 var saleId = _saleService.ProcessSale(sale);
 
@@ -124,7 +133,6 @@ namespace Warden.Controllers
                 return View(sale);
             }
         }
-
 
 
         [HttpGet]
@@ -231,7 +239,7 @@ namespace Warden.Controllers
 
                                 foreach (var item in sale.Items)
                                 {
-                                    decimal totalItem = item.Quantity * item.UnitPrice;
+                                    decimal totalItem = item.Quantity * item.UnitPrice; 
                                     totalSale += totalItem;
 
                                     table.Cell().Text($"Produto #{item.ProductId}");
@@ -243,7 +251,7 @@ namespace Warden.Controllers
                                 table.Footer(footer =>
                                 {
                                     footer.Cell().ColumnSpan(3).AlignRight().Text("TOTAL DA VENDA:").Bold();
-                                    footer.Cell().AlignRight().Text($"R$ {totalSale:F2}").Bold();
+                                    footer.Cell().AlignRight().Text($"R$ {sale.TotalAmount:F2}").Bold(); 
                                 });
                             });
 
@@ -263,6 +271,7 @@ namespace Warden.Controllers
             document.GeneratePdf(ms);
             return ms.ToArray();
         }
+
 
         [HttpPost]
         public IActionResult Export(DateTime startDate, DateTime endDate)

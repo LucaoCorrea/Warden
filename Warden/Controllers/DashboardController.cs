@@ -47,7 +47,7 @@ namespace Warden.Controllers
                 .Select(g => new SalesByWeekdayDto
                 {
                     Weekday = g.Key.ToString(),
-                    AverageSales = g.Average(s => s.Items.Sum(i => i.Quantity * i.UnitPrice))
+                    AverageSales = g.Average(s => s.TotalAmount)
                 })
                 .OrderBy(d => d.Weekday)
                 .ToList();
@@ -67,13 +67,13 @@ namespace Warden.Controllers
                 .GroupBy(s => s.PaymentMethod.ToString())
                 .Select(g => new PaymentMethodSalesDto
                 {
-                PaymentMethod = g.Key,
-                SalesCount = g.Count()
-                 })
+                    PaymentMethod = g.Key,
+                    SalesCount = g.Count()
+                })
                 .OrderByDescending(p => p.SalesCount)
                 .ToList();
 
-            var totalSalesAmount = _context.SaleItems.Sum(i => i.Quantity * i.UnitPrice);
+            var totalSalesAmount = _context.Sales.Sum(s => s.TotalAmount);
             var totalSalesCount = _context.Sales.Count();
 
             var topUsers = sales
@@ -81,7 +81,7 @@ namespace Warden.Controllers
                 .Select(g => new TopUserSalesDto
                 {
                     UserName = g.Key,
-                    TotalSalesAmount = g.Sum(s => s.Items.Sum(i => i.Quantity * i.UnitPrice))
+                    TotalSalesAmount = g.Sum(s => s.TotalAmount)
                 })
                 .OrderByDescending(u => u.TotalSalesAmount)
                 .Take(5)
@@ -101,7 +101,7 @@ namespace Warden.Controllers
                 .Select(g => new AvgTicketByPaymentMethodDto
                 {
                     PaymentMethod = g.Key,
-                    AverageTicket = g.Average(s => s.Items.Sum(i => i.Quantity * i.UnitPrice))
+                    AverageTicket = g.Average(s => s.TotalAmount)
                 })
                 .ToList();
 
