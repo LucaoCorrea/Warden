@@ -3,7 +3,7 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light border-0">
     <div class="container-fluid d-flex justify-content-between align-items-center">
         <div class="navbar-text fw-bold text-danger">
-            Olá, @Model.Name | 
+            Olá, @Model.Name |
         </div>
 
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -65,6 +65,19 @@
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="wardenLoversDropdown">
                         <li><a class="dropdown-item" asp-controller="LoyalCustomer" asp-action="Index"><i class="fas fa-users"></i> Clientes Fidelizados</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle text-primary" href="#" id="talkDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-comments"></i> Talk
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="talkDropdown">
+                        <li>
+                            <a class="dropdown-item" asp-controller="Chat" asp-action="Index">
+                                <i class="fas fa-comment-dots"></i> Chat
+                            </a>
+                        </li>
                     </ul>
                 </li>
 

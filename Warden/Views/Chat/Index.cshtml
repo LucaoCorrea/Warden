@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Warden.Models.ChatModel>
+
+@{
+    ViewData["Title"] = "Chat";
+    var currentUser = (Warden.Models.UserModel)ViewBag.CurrentUser;
+    var isAdmin = currentUser?.Profile == Warden.Enums.ProfileEnum.Admin;
+}
+
+<h2>Chat</h2>
+
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:20px;">
+    @if (!Model.Any())
+    {
+        <p><em>Nenhuma mensagem ainda.</em></p>
+    }
+    else
+    {
+        foreach (var message in Model.OrderBy(m => m.SentAt))
+        {
+            <div style="margin-bottom: 10px;">
+                <strong>@message.User.Login:</strong>
+                <span>@message.Text</span>
+                <small style="color:gray;">[@message.SentAt.ToString("HH:mm")]</small>
+            </div>
+        }
+    }
+</div>
+
+@if (isAdmin)
+{
+    <form asp-action="Send" method="post">
+        <input type="text" name="text" placeholder="Digite sua mensagem..." class="form-control" required />
+        <button type="submit" class="btn btn-primary mt-2">Enviar</button>
+    </form>
+}
+else
+{
+    <p>sua role é: @Warden.Enums.ProfileEnum.Admin</p>
+    <p class="text-muted"><em>Apenas administradores podem enviar mensagens.</em></p>
+}

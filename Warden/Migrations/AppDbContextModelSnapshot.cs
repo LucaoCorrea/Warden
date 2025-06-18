@@ -88,6 +88,31 @@ namespace Warden.Migrations
                     b.ToTable("CashRegisters");
                 });
 
+            modelBuilder.Entity("Warden.Models.ChatModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Text")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Chat");
+                });
+
             modelBuilder.Entity("Warden.Models.ContactModel", b =>
                 {
                     b.Property<int>("Id")
@@ -443,6 +468,17 @@ namespace Warden.Migrations
                         .IsRequired();
 
                     b.Navigation("CashRegister");
+                });
+
+            modelBuilder.Entity("Warden.Models.ChatModel", b =>
+                {
+                    b.HasOne("Warden.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Warden.Models.ContactModel", b =>
