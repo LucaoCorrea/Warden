@@ -4,12 +4,13 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Warden | Seu Controle de Estoque</title>
-    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/logo.png"/>
+    <link rel="icon" type="image/x-icon" href="~/img/logo.png" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Warden.styles.css" asp-append-version="true" />
-    <link href="https://cdn.datatables.net/v/dt/dt-2.3.2/datatables.min.css" rel="stylesheet" integrity="sha384-d76uxpdVr9QyCSR9vVSYdOAZeRzNUN8A4JVqUHBVXyGxZ+oOfrZVHC/1Y58mhyNg" crossorigin="anonymous">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/v/dt/dt-2.3.2/datatables.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+
     <style>
         body {
             background-color: #ffffff;
@@ -60,7 +61,74 @@
             margin-top: 1.5rem;
         }
 
+        .notifications-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
 
+        .notification {
+            background-color: #333;
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            min-width: 280px;
+            max-width: 400px;
+            opacity: 1;
+            transition: all 0.4s ease;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            position: relative;
+        }
+
+            .notification:hover {
+                background-color: #444;
+            }
+
+            .notification.read {
+                opacity: 0.5;
+            }
+
+            .notification img {
+                width: 64px;
+                height: 64px;
+                border-radius: 6px;
+            }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification strong {
+            font-size: 16px;
+            display: block;
+        }
+
+        .notification p {
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .notification .close-btn {
+            position: absolute;
+            top: 8px;
+            right: 10px;
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+            .notification .close-btn:hover {
+                color: #dc3545;
+            }
     </style>
 </head>
 <body>
@@ -84,10 +152,74 @@
         </div>
     </footer>
 
+    <div class="notifications-container"></div>
+
+    <script>
+        const notificationSound = new Audio('/sounds/notify.mp3');
+        notificationSound.volume = 0.05;
+
+        async function fetchNotifications() {
+            try {
+                const response = await fetch('/api/notification');
+                if (response.ok) {
+                    const notifications = await response.json();
+                    if (notifications.length > 0) {
+                        displayNotifications(notifications);
+                    }
+                }
+            } catch (error) {
+                console.error('Erro ao buscar notificações:', error);
+            }
+        }
+
+        function displayNotifications(notifications) {
+            const container = document.querySelector('.notifications-container');
+            if (!container) return;
+
+            notifications.forEach(notification => {
+                const div = document.createElement('div');
+                div.className = 'notification';
+
+                div.innerHTML = `
+                    <img src="/img/logo.png" alt="Warden">
+                    <div class="notification-content">
+                        <strong>${notification.title}</strong>
+                        <p>${notification.message}</p>
+                    </div>
+                    <button class="close-btn">&times;</button>
+                `;
+
+                div.querySelector('.close-btn').onclick = (e) => {
+                    e.stopPropagation();
+                    div.remove();
+                };
+
+                div.onclick = () => {
+                    div.classList.add('read');
+                    setTimeout(() => div.remove(), 500);
+                };
+
+                container.appendChild(div);
+                notificationSound.play();
+
+                fetch('/api/notification/' + notification.id, { method: 'PUT' });
+
+                setTimeout(() => {
+                    div.remove();
+                }, 10000);
+            });
+        }
+
+        setInterval(fetchNotifications, 5000);
+        fetchNotifications();
+    </script>
+
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="https://cdn.datatables.net/v/dt/dt-2.3.2/datatables.min.js" integrity="sha384-JRUjeYWWUGO171YFugrU0ksSC6CaWnl4XzwP6mNjnnDh4hfFGRyYbEXwryGwLsEp" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/v/dt/dt-2.3.2/datatables.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

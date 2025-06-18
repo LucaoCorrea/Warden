@@ -20,6 +20,7 @@ namespace Warden.Data
         public DbSet<CashMovementModel> CashMovements { get; set; }
         public DbSet<LoyalCustomerModel> LoyalCustomers { get; set; }
 
+        public DbSet<NotificationModel> Notifications { get; set; }
         public DbSet<ReleaseNoteModel> ReleaseNotes { get; set; }
         public DbSet<UserReleaseViewModel> UserReleaseViews { get; set; }
 

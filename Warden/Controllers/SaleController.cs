@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
+using Warden.Data;
 using Warden.Models;
 using Warden.Repositories;
 using Warden.Repository;
@@ -17,13 +18,15 @@ namespace Warden.Controllers
         private readonly IProductRepository _productRepo;
         private readonly CashRegisterService _cashService;
         private readonly ICustomerRepository _customerRepo;
+        private readonly AppDbContext _context;
 
-        public SaleController(SaleService saleService, IProductRepository productRepo, CashRegisterService cashService, ICustomerRepository customerRepo)
+        public SaleController(SaleService saleService, IProductRepository productRepo, CashRegisterService cashService, ICustomerRepository customerRepo, AppDbContext context)
         {
             _saleService = saleService;
             _productRepo = productRepo;
             _cashService = cashService;
             _customerRepo = customerRepo;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -123,6 +126,16 @@ namespace Warden.Controllers
 
                 var saleId = _saleService.ProcessSale(sale);
 
+                var notification = new NotificationModel
+                {
+                    Title = "Novo Pedido de Venda",
+                    Message = $"Um novo pedido de venda foi realizado por {sale.Id}.",
+                    CreatedAt = DateTime.Now,
+                    IsRead = false
+                };
+                _context.Notifications.Add(notification);
+                _context.SaveChanges();
+
                 return RedirectToAction(nameof(Receipt), new { id = saleId });
             }
             catch (Exception ex)
@@ -133,6 +146,7 @@ namespace Warden.Controllers
                 return View(sale);
             }
         }
+
 
 
         [HttpGet]
