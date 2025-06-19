@@ -31,6 +31,21 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Chat",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Chat", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "LoyalCustomers",
                 columns: table => new
                 {
@@ -186,27 +201,6 @@ namespace Warden.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Chat",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SentAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Chat", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Chat_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Contacts",
                 columns: table => new
                 {
@@ -294,11 +288,6 @@ namespace Warden.Migrations
                 name: "IX_CashMovements_CashRegisterId",
                 table: "CashMovements",
                 column: "CashRegisterId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Chat_UserId",
-                table: "Chat",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Contacts_UserId",

@@ -165,13 +165,16 @@ namespace Warden
                     Title = "Nota de Atualização",
                     Version = "BETA - 1.2.2.25",
                     Description = @"
-- Novo sistema de vendas com integração ao estoque
-- Módulo de Caixa completo com abertura, fechamento e histórico
-- Sistema Warden Lovers de fidelização com cashback (em desenvolvimento)
-- Exportação de relatórios para Excel
-- Geração de notas fiscais simuladas em PDF
+-Sistema de Cashback aprimorado com novas funcionalidades e mais integrações
+-Integração Warden Lovers totalmente reformulada para uma experiência de fidelização mais eficiente
+-Função de Chat implementada para facilitar a comunicação em tempo real
+-Novos relatórios extras para um acompanhamento mais detalhado e eficaz
+-Melhorias de segurança para garantir proteção e confiabilidade
+-Código mais limpo (Clean Code), otimizando a manutenção e evolução do sistema
+-Correção de pequenos bugs e aprimoramento de performance
 ",
                     ReleaseDate = DateTime.Now
+
                 };
 
                 context.ReleaseNotes.Add(release);

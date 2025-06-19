@@ -12,8 +12,8 @@ using Warden.Data;
 namespace Warden.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250619122705_Tbls2")]
-    partial class Tbls2
+    [Migration("20250619150614_Tbls")]
+    partial class Tbls
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,12 +106,11 @@ namespace Warden.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Chat");
                 });
@@ -471,17 +470,6 @@ namespace Warden.Migrations
                         .IsRequired();
 
                     b.Navigation("CashRegister");
-                });
-
-            modelBuilder.Entity("Warden.Models.ChatModel", b =>
-                {
-                    b.HasOne("Warden.Models.UserModel", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Warden.Models.ContactModel", b =>

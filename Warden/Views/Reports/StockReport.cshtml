@@ -13,8 +13,8 @@
     </div>
     <div class="col-md-12 text-end mt-2">
         <button type="submit" class="btn btn-primary">Filtrar</button>
-        <button type="button" class="btn btn-secondary">Exportar PDF</button>
-        <button type="button" class="btn btn-secondary">Exportar Excel</button>
+        <a href="@Url.Action("ExportStockToExcel", "Report", new { category = Model.Filters.Category })" class="btn btn-success">Exportar para Excel</a>
+        <a href="@Url.Action("ExportStockToPdf", "Report", new { category = Model.Filters.Category })" class="btn btn-danger">Exportar para PDF</a>
     </div>
 </form>
 
