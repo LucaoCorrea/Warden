@@ -45,7 +45,7 @@ public class ChatController : Controller
         {
             Text = text,
             SentAt = DateTime.Now,
-            UserName = userName  // Apenas armazenamos o nome do usuário
+            UserName = userName  
         };
 
         _context.Chat.Add(message);
