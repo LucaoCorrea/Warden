@@ -78,6 +78,15 @@
                                 <i class="fas fa-comment-dots"></i> Chat
                             </a>
                         </li>
+
+                        @if (Model.Profile == Warden.Enums.ProfileEnum.Admin)
+                        {
+                            <li>
+                                <a class="dropdown-item" asp-controller="Chat" asp-action="Create">
+                                    <i class="fas fa-plus-circle"></i> Criar Mensagem
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </li>
 

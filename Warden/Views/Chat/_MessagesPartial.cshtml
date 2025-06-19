@@ -1,0 +1,30 @@
+﻿@model IEnumerable<Warden.Models.ChatModel>
+
+@{
+    var totalMessages = Model.Count();
+    var recentMessages = Model.Take(5).ToList();
+    var oldMessages = Model.Skip(5).ToList();
+}
+
+@if (oldMessages.Any())
+{
+    <div class="see-more">
+        <button type="button" data-bs-toggle="modal" data-bs-target="#olderMessagesModal">
+            Ver mensagens mais antigas
+        </button>
+    </div>
+}
+
+@foreach (var message in recentMessages)
+{
+    var isMe = message.UserName == "Seu Nome";
+    <div class="message-item @(isMe ? "message-sent" : "message-received")">
+        <div class="message-header">
+            <span>@message.UserName</span>
+            <span style="font-weight:400;">@message.SentAt.ToString("HH:mm")</span>
+        </div>
+        <div class="message-text">
+            @message.Text
+        </div>
+    </div>
+}

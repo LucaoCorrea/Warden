@@ -1,4 +1,6 @@
-﻿namespace Warden.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Warden.Models
 {
     public class ChatModel
     {
@@ -6,6 +8,7 @@
         public string Text { get; set; }
         public DateTime SentAt { get; set; }
 
-        public UserModel User { get; set; }
+        public string UserName { get; set; }
+
     }
 }

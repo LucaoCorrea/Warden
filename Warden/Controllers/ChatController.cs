@@ -1,55 +1,56 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Warden.Data;
 using Warden.Models;
 
-namespace Warden.Controllers
+public class ChatController : Controller
 {
-    public class ChatController : Controller
+    private readonly AppDbContext _context;
+
+    public ChatController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public ChatController(AppDbContext context)
-        {
-            _context = context;
-        }
+    public async Task<IActionResult> Index()
+    {
+        var messages = await _context.Chat
+            .OrderByDescending(c => c.SentAt)
+            .ToListAsync();
 
-        public async Task<IActionResult> Index()
-        {
-            var messages = await _context.Chat
-                .Include(c => c.User)
-                .OrderByDescending(c => c.SentAt)
-                .ToListAsync();
+        return View(messages);
+    }
 
-            return View(messages);
-        }
+    public IActionResult Create()
+    {
+        return View();
+    }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Send(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-                return RedirectToAction("Index");
+    public IActionResult GetMessages()
+    {
+        var messages = _context.Chat
+                        .OrderByDescending(m => m.SentAt)
+                        .ToList();
 
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        return PartialView("_MessagesPartial", messages);
+    }
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id.ToString() == userId);
-            if (user == null)
-                return Unauthorized();
-
-            var message = new ChatModel
-            {
-                Text = text,
-                SentAt = DateTime.Now,
-                User = user
-            };
-
-            _context.Chat.Add(message);
-            await _context.SaveChangesAsync();
-
+    [HttpPost]
+    public async Task<IActionResult> Create(string text, string userName)
+    {
+        if (string.IsNullOrWhiteSpace(text) || string.IsNullOrWhiteSpace(userName))
             return RedirectToAction("Index");
-        }
+
+        var message = new ChatModel
+        {
+            Text = text,
+            SentAt = DateTime.Now,
+            UserName = userName  // Apenas armazenamos o nome do usuário
+        };
+
+        _context.Chat.Add(message);
+        await _context.SaveChangesAsync();
+
+        return RedirectToAction("Index");
     }
 }
