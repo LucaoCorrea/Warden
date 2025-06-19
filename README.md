@@ -1,153 +1,252 @@
-# 🛡️ WARDEN
-<p align="center"> <img src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/logo.png" width="200"/> </p>
 
+  
+
+# 🛡️ WARDEN
+
+  
+
+<p  align="center">
+
+<img  src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/logo.png"  width="200"/>
+
+</p>
+
+  
 
 ## 🔍 O que é Warden?
 
-O **Warden** é um sistema completo de **gestão de estoque, vendas (PDV), controle de caixa e fidelização de clientes**, desenvolvido em **ASP.NET Core MVC + SQL Server**.
+  
 
-Este projeto foi idealizado para empresas que desejam uma gestão eficiente dos seus processos comerciais, focando em **controle de produtos, movimentações de estoque, vendas e caixa**, além de oferecer uma ferramenta de **fidelização inteligente** com geração de documentos em **PDF, XLSX e Notas Fiscais**.
+O **Warden** é um sistema completo de **gestão de estoque, vendas (PDV), controle de caixa, fidelização de clientes, chat interno e notificações**, desenvolvido em **ASP .NET Core MVC + SQL Server**.
 
-<p align="center"> <img src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/dashboard.png" width="700"/> </p>
+  
 
-----------
+Projetado para empresas que desejam uma gestão operacional eficiente, o Warden oferece **controle de produtos, movimentações de estoque, vendas, caixa e relacionamento com clientes**, além de contar com **geração de relatórios em PDF e Excel, emissão de nota fiscal simulada e um painel de notificações inteligentes**.
+
+  
+
+<p  align="center">
+
+<img  src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/dashboard.png"  width="700"/>
+
+</p>
+
+  
+
+---
+
+  
 
 ![repo size](https://img.shields.io/github/repo-size/LucaoCorrea/Warden?color=blue&label=repo%20size)
+
 ![last commit](https://img.shields.io/github/last-commit/LucaoCorrea/Warden?color=olive&label=last%20commit)
 
----------
+  
+
+---
+
+  
 
 ## 🚀 Como rodar
 
-Para saber como rodar o projeto, acesse o guia completo:
+  
 
-👉 [Clique aqui para acessar o READY.md](https://github.com/LucaoCorrea/Warden/blob/main/READY.md)
+Acesse o guia completo de instalação:
 
-----------
+  
+
+👉 [READY.md](https://github.com/LucaoCorrea/Warden/blob/main/READY.md)
+
+  
+
+---
+
+  
 
 ## 🗂️ Estrutura do Projeto
 
-    Warden/
-    ├── Controllers/
-    ├── Models/
-    ├── Views/
-    ├── Services/
-    ├── Repositories/
-    ├── wwwroot/
-    │   └── img/
-    ├── Data/
-    ├── Warden.csproj 
-    ├── appsettings.json 
-    └── Program.cs
-    └── Startup.cs
+  
 
-----------
+```
 
-## 🎯 Finalidades e Funcionalidades
+Warden/
 
--   ✅ **Gestão de produtos** (Cadastro, Edição, Controle de estoque, Categorias, Preços)
-    
--   ✅ **Controle de movimentações de estoque** (Entradas e Saídas manuais ou automáticas)
-    
--   ✅ **Sistema de vendas (PDV)** com seleção de produtos, clientes fidelizados e geração de nota fiscal (PDF)
-    
--   ✅ **Controle de caixa** (Abrir, Fechar, Histórico, Saques, Aportes)
-    
--   ✅ **Fidelização de clientes** (Clientes cadastrados para gerar cashback e vantagens)
-    
--   ✅ **Relatórios** (Exportação de vendas em Excel)
-    
--   ✅ **Geração de Nota Fiscal falsa** (Para simulações internas)
-    
+├── Controllers/
 
-<p align="center"> <img src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/products.png" width="700"/> </p>
+├── Models/
 
-----------
+├── Views/
 
-## 💖 Explicação do **Warden Lovers**
+├── Services/
 
-O **Warden Lovers** é o sistema interno de **clientes fidelizados**. Ele permite:
+├── Repositories/
 
--   Cadastro de clientes recorrentes
-    
--   Consulta de histórico de compras
-    
--   Implementação futura de **cashback inteligente**
-    
--   Fortalecer o relacionamento com clientes através de recompensas e promoções.
-    
+├── wwwroot/
 
-> ⚙️ **Em desenvolvimento:** cálculo de cashback, benefícios automáticos e métricas de fidelização.
+├── Data/
 
-<p align="center"> <img src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/home.png" width="700"/> </p>
+├── Warden.csproj
 
-----------
+├── appsettings.json
 
-## 🚀 Pontos de Updates (Próximas melhorias)
+├── Program.cs
 
--   🎯 Finalização do sistema de cashback no Warden Lovers
-    
--   📲 Integração de API para vendas mobile/web
-    
--   ♻️ Melhorias no código: remover redundâncias, melhorar padrão Repository/Service
-    
--   🔧 Testes unitários e integração
-    
--   💰 Implementar API de transações virtuais
-    
--   📦 Deploy em nuvem (Azure, AWS ou outro)
-    
+└── Startup.cs
 
-----------
+```
 
-## 🔥 Pontos importantes do projeto desenvolvidos
+  
 
--   ✅ Controle de estoque totalmente integrado ao PDV
-    
--   ✅ Sistema de caixa robusto (abertura, fechamento, histórico e movimentações)
-    
--   ✅ Geração de notas fiscais em PDF simuladas (QuestPDF)
-    
--   ✅ Sistema de vendas com fidelização integrada
-    
--   ✅ Exportação de relatórios para Excel
-    
--   ✅ Backend pronto para ser expandido via API REST
-    
+---
 
-<p align="center"> <img src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/cashregister.png" width="700"/> </p>
+  
 
-----------
+## 🎯 Funcionalidades
 
-## 🌐 Rotas de Endpoints
+  
 
-Consulte a documentação completa das rotas da API:
+- ✅ **Gestão de produtos**
 
-👉 [Clique aqui para acessar o API.md](https://github.com/LucaoCorrea/Warden/blob/main/API.md)
+- ✅ **Movimentações de estoque (entrada/saída manual e automática)**
 
-----------
+- ✅ **PDV (vendas)** com nota fiscal simulada
+
+- ✅ **Controle de caixa** (abertura, fechamento, histórico, saques, aportes)
+
+- ✅ **Fidelização de clientes** (**Warden Lovers**) com cashback (em desenvolvimento)
+
+- ✅ **Relatórios** (Vendas, Estoque, Lucro, Vendas por usuário) em **PDF e Excel**
+
+- ✅ **Notificações internas** para alertas operacionais
+
+- ✅ **Chat interno** para comunicação dos usuários
+
+- ✅ **API REST pública**
+
+- ✅ **Dashboard interativo** com dados operacionais
+
+- ✅ **Geração de Nota Fiscal simulada** via PDF
+
+  
+
+<p  align="center">
+
+<img  src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/products.png"  width="700"/>
+
+</p>
+
+  
+
+---
+
+  
+
+## 💖 Warden Lovers (Fidelização)
+
+  
+
+- Cadastro e gestão de clientes recorrentes
+
+- Histórico de compras
+
+- Cashback (em desenvolvimento)
+
+- Benefícios e programa de recompensas (em breve)
+
+  
+
+<p  align="center">
+
+<img  src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/home.png"  width="700"/>
+
+</p>
+
+  
+## 🗃️Caixa e Relatórios
+<p  align="center">
+
+<img  src="https://raw.githubusercontent.com/LucaoCorrea/Warden/refs/heads/main/Warden/wwwroot/img/cashregister.png"  width="700"/>
+
+</p>
+
+
+  
+
+## 🔔 Notificações e 💬 Chat
+
+  
+
+- 🔥 **Notificações:** Alertas sobre caixa, estoque, vendas e operações
+
+- 💬 **Chat Interno:** Comunicação rápida entre usuários no dashboard
+  
+
+---
+
+  
+
+## 🌐 API Pública
+
+  
+
+Acesse a documentação completa dos endpoints:
+
+  
+
+👉 [API.md](https://github.com/LucaoCorrea/Warden/blob/main/API.md)
+
+  
+
+---
+
+  
+
+## 🚀 Melhorias Futuras
+
+  
+
+- 📲 API para vendas web e mobile
+
+- 🔧 Refatoração para melhoria de padrões (Repository/Service)
+
+- ✅ Testes unitários e integração
+
+- ☁️ Deploy em nuvem (Azure, AWS, etc)
+
+- 🧠 Dashboards inteligentes
+
+  
+
+---
+
+  
 
 ## 🤝 Contribuição
 
-Contribuições são bem-vindas!
+  
 
-Para contribuir:
+1. Faça um fork
 
-1.  Faça um fork deste repositório
-    
-2.  Crie uma branch: `git checkout -b feature/sua-feature`
-    
-3.  Commit suas mudanças: `git commit -m 'Add nova feature'`
-    
-4.  Push para a branch: `git push origin feature/sua-feature`
-    
-5.  Abra um Pull Request
-    
+2. Crie uma branch: `git checkout -b feature/sua-feature`
 
-----------
+3. Commit suas mudanças: `git commit -m 'Add nova feature'`
+
+4. Push para a branch: `git push origin feature/sua-feature`
+
+5. Abra um Pull Request
+
+  
+
+---
+
+  
 
 ## 📜 Licença
 
-Este projeto foi desenvolvido por [**Lucas Corrêa**](https://www.linkedin.com/in/lucas-leonard-dev/) para o programa de cursos da **FDevs**, voltado para a empresa [**UPPERCASE**](https://www.linkedin.com/company/upperconsultoria/posts/?feedView=all).
+  
 
-Distribuído sob a Licença MIT. Consulte o arquivo [LICENSE](./LICENSE) para mais detalhes.
+Projeto desenvolvido por [**Lucas Corrêa**](https://www.linkedin.com/in/lucas-leonard-dev/) para o programa da **FDevs** e da empresa [**UPPERCASE**](https://www.linkedin.com/company/upperconsultoria/posts/?feedView=all).
+
+  
+
+Distribuído sob a Licença MIT. Veja o arquivo [LICENSE](./LICENSE) para mais detalhes.
